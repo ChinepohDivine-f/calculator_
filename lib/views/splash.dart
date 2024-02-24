@@ -21,22 +21,22 @@ class _SplashPageState extends State<SplashPage> {
     initState() {
       super.initState();
     }
-    Color color1 = Colors.black87;
-    Color color2 = Colors.white;
+    Color color2 = Colors.black45;
+    Color color1 = Colors.white;
     bool isShadow = true;
 
-    // Timer(const Duration(seconds: 3), () {
+    Timer(const Duration(seconds: 3), () {
 
-    //   setState(() {
-    //      Color temp = color1; 
-    //      color1 = color2;
-    //       color2 = temp;
-    //   isShadow = false;
-    //   });
+      setState(() {
+         Color temp = color1; 
+         color1 = color2;
+          color2 = temp;
+      isShadow = false;
+      });
      
-    // });
+    });
     return Scaffold(
-        backgroundColor: ColorScheme.fromSeed(seedColor: seed).background,
+        backgroundColor: color2,
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -51,8 +51,9 @@ class _SplashPageState extends State<SplashPage> {
                   Text(
                     "Calculator",
                     style: TextStyle(
+                      fontSize: 16,
                         color:
-                            ColorScheme.fromSeed(seedColor: seed).onBackground),
+                            color1),
                   ),
                 ],
               ),
@@ -96,7 +97,7 @@ class _SplashPageState extends State<SplashPage> {
           "=",
           style: TextStyle(
               fontSize: 65,
-              color: Color2),
+              color: Colors.blueAccent),
         )));
   }
 }

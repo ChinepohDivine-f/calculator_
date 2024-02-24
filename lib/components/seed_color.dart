@@ -1,4 +1,4 @@
 import 'package:flutter/material.dart'; 
 
 
-var seed = Colors.grey;
+var seed = Colors.blue;
