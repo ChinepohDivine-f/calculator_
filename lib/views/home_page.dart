@@ -12,23 +12,23 @@ class CalculatorPage extends StatelessWidget {
         (MediaQuery.of(context).size.width * 0.57);
     return Scaffold(
       backgroundColor: ThemeData.dark().scaffoldBackgroundColor,
-      // appBar: AppBar(
-      //   bottomOpacity: 5,
-      //   backgroundColor: ThemeData.dark().scaffoldBackgroundColor,
-      //     title: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      //   // IconButton(onPressed: () {print('dont touch me sir...');}, icon: Icon(Icons.menu_rounded, color: Colors.white),),
-      //   Text('C A L C U L A T O R',
-      //       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white)),
-      //       Switch(value: true, onChanged: (value) {},)
-      // ])),
-      appBar: AppBar(title: SliverAppBar(title: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-         Text('C A L C U L A T O R',
+      appBar: AppBar(
+        bottomOpacity: 5,
+        backgroundColor: ThemeData.dark().scaffoldBackgroundColor,
+          title: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        // IconButton(onPressed: () {print('dont touch me sir...');}, icon: Icon(Icons.menu_rounded, color: Colors.white),),
+        Text('C A L C U L A T O R',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white)),
-            Switch(value: true, onChanged: (value) {},)]))),
+            Switch(value: true, onChanged: (value) {},)
+      ])),
+      // appBar: AppBar(title: SliverAppBar(title: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      //    Text('C A L C U L A T O R',
+      //       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white)),
+      //       Switch(value: true, onChanged: (value) {},)]))),
       body: Column(
         children: [
           Expanded(
-            flex: 7,
+            flex: 8,
             child: ListView(
               shrinkWrap: true,
               reverse: true,
