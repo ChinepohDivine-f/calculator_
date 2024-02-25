@@ -4,8 +4,70 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:calculator/components/seed_color.dart';
 
-class CalculatorPage extends StatelessWidget {
+class CalculatorPage extends StatefulWidget {
   const CalculatorPage({super.key});
+
+  @override
+  State<CalculatorPage> createState() => _CalculatorPageState();
+}
+
+class _CalculatorPageState extends State<CalculatorPage> {
+  String equation = "0";
+  String result = "0";
+  String expression = "";
+  double equationSize = 32;
+  double resultSize = 51.52;
+
+  buttonPressed(String buttonText) {
+    if (buttonText == "C") {
+      // clear all the characters
+    } else if (buttonText == "D") {
+      // delete previos character
+    } else if (buttonText == "=") {
+      // provide results
+    } else {
+      // update the screen with buttonText
+    }
+  }
+
+  CustomBtn( 
+    // Color? buttonColor2 ,
+    {
+    required String buttonText,
+    required double buttonHeight,
+    required Color buttonColor,
+    Color? buttonColor2 = Colors.transparent,
+  }) {
+    // buttonColor2 = Colors.transparent;
+    var isTapped=false;
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () => buttonPressed(buttonText),
+      child: Container(
+          // padding: EdgeInsets.all(16),
+          // margin: EdgeInsets.all(3),
+          alignment: Alignment.center,
+          height: MediaQuery.of(context).size.height * 0.11 * buttonHeight,
+          decoration: BoxDecoration(
+              color: isTapped
+                  ? ThemeData.dark().canvasColor.withOpacity(0.8)
+                  : buttonColor2,
+              // borderRadius: BorderRadius.circular(5),
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(5),
+                bottomRight: Radius.circular(5),
+              ),
+              border: Border.all(
+                  width: 1, color: ThemeData.dark().backgroundColor)),
+          child: Text(buttonText,
+              style: TextStyle(
+                fontSize: 32,
+                color: isTapped
+                    ? ThemeData.dark().canvasColor.withOpacity(0.8)
+                    : buttonColor,
+              ))),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,15 +81,17 @@ class CalculatorPage extends StatelessWidget {
           title:
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             // IconButton(onPressed: () {print('dont touch me sir...');}, icon: Icon(Icons.menu_rounded, color: Colors.white),),
-            Text('C A L C U L A T O R',
+            const Text('C A L C U L A T O R',
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                     color: Colors.white)),
-            Switch(
-              value: true,
-              onChanged: (value) {},
-            )
+            // Switch(
+            //   value: true,
+            //   onChanged: (value) {},
+            // )
+            IconButton(
+                onPressed: () {}, icon: Icon(Icons.menu, color: Colors.white))
           ])),
       // appBar: AppBar(title: SliverAppBar(title: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       //    Text('C A L C U L A T O R',
@@ -46,14 +110,16 @@ class CalculatorPage extends StatelessWidget {
                 Container(
                   alignment: Alignment.centerRight,
                   padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
-                  child: Text('0',
-                      style: TextStyle(fontSize: 48, color: Colors.white)),
+                  child: Text(result,
+                      style:
+                          TextStyle(fontSize: resultSize, color: Colors.white)),
                 ),
                 Container(
                   alignment: Alignment.centerRight,
                   padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
-                  child: Text('0',
-                      style: TextStyle(fontSize: 36, color: Colors.white60)),
+                  child: Text(equation,
+                      style: TextStyle(
+                          fontSize: equationSize, color: Colors.white60)),
                 ),
               ],
             ),
@@ -72,7 +138,8 @@ class CalculatorPage extends StatelessWidget {
                 const EdgeInsets.only(bottom: 2, top: 1, right: 1, left: 1),
             decoration: BoxDecoration(
                 color: ThemeData.dark().cardColor,
-                borderRadius: BorderRadius.only(
+                // color: ThemeData.dark().dividerColor,
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(5),
                   topRight: Radius.circular(5),
                 )),
@@ -80,7 +147,7 @@ class CalculatorPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Expanded(
-                    flex:3,
+                    flex: 3,
                     // width: MediaQuery.of(context).size.width * 0.75,
                     child: Table(
                       children: [
@@ -192,11 +259,11 @@ class CalculatorPage extends StatelessWidget {
                     TableRow(children: [
                       CustomBtn(
                         buttonColor: seed,
-                        // buttonHeight: 1,
+                        buttonHeight: 1,
                         buttonText: '+',
                       ),
                     ]),
-                    const TableRow(children: [
+                    TableRow(children: [
                       CustomBtn(
                         buttonColor2: Color.fromARGB(255, 78, 212, 83),
                         buttonColor: Colors.white,
@@ -215,49 +282,54 @@ class CalculatorPage extends StatelessWidget {
   }
 }
 
-class CustomBtn extends StatelessWidget {
-  const CustomBtn({
-    super.key,
-    this.buttonText = "String?",
-    this.buttonHeight = 1,
-    this.buttonColor,
-    this.isTapped = false,
-    this.buttonColor2 = Colors.transparent,
-  });
-  final String buttonText;
-  final double buttonHeight;
-  final Color? buttonColor;
-  final Color buttonColor2;
-  final bool isTapped;
 
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onTap: () {},
-      child: Container(
-          // padding: EdgeInsets.all(16),
-          // margin: EdgeInsets.all(3),
-          alignment: Alignment.center,
-          height: MediaQuery.of(context).size.height * 0.11 * buttonHeight,
-          decoration: BoxDecoration(
-              color: isTapped
-                  ? ThemeData.dark().canvasColor.withOpacity(0.8)
-                  : buttonColor2.withOpacity(0.9),
-              // borderRadius: BorderRadius.circular(5),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(5),
-                bottomRight: Radius.circular(5),
-              ),
-              border: Border.all(
-                  width: 1, color: ThemeData.dark().backgroundColor)),
-          child: Text(buttonText,
-              style: TextStyle(
-                fontSize: 32,
-                color: isTapped
-                    ? ThemeData.dark().canvasColor.withOpacity(0.8)
-                    : buttonColor,
-              ))),
-    );
-  }
-}
+
+
+// class CustomBtn extends StatelessWidget {
+//   const CustomBtn({
+//     super.key,
+//     this.buttonText = "String?",
+//     this.buttonHeight = 1,
+//     this.buttonColor,
+//     this.isTapped = false,
+//     this.buttonColor2 = Colors.transparent,
+//   });
+//   final String buttonText;
+//   final double buttonHeight;
+//   final Color? buttonColor;
+//   final Color buttonColor2;
+//   final bool isTapped;
+  
+
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return GestureDetector(
+//       behavior: HitTestBehavior.translucent,
+//       onTap: ()=> buttonPressed(buttonText),
+//       child: Container(
+//           // padding: EdgeInsets.all(16),
+//           // margin: EdgeInsets.all(3),
+//           alignment: Alignment.center,
+//           height: MediaQuery.of(context).size.height * 0.11 * buttonHeight,
+//           decoration: BoxDecoration(
+//               color: isTapped
+//                   ? ThemeData.dark().canvasColor.withOpacity(0.8)
+//                   : buttonColor2.withOpacity(0.9),
+//               // borderRadius: BorderRadius.circular(5),
+//               borderRadius: BorderRadius.only(
+//                 bottomLeft: Radius.circular(5),
+//                 bottomRight: Radius.circular(5),
+//               ),
+//               border: Border.all(
+//                   width: 1, color: ThemeData.dark().backgroundColor)),
+//           child: Text(buttonText,
+//               style: TextStyle(
+//                 fontSize: 32,
+//                 color: isTapped
+//                     ? ThemeData.dark().canvasColor.withOpacity(0.8)
+//                     : buttonColor,
+//               ))),
+//     );
+//   }
+// }
