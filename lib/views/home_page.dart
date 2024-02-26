@@ -17,48 +17,96 @@ class _CalculatorPageState extends State<CalculatorPage> {
   String expression = "";
   double equationSize = 32;
   double resultSize = 51.52;
+  Color resultColor = Colors.white;
+  Color expressionColor = Colors.white60;
 
   buttonPressed(String buttonText) {
-    if (buttonText == "C") {
-      // clear all the characters
-    } else if (buttonText == "D") {
-      // delete previos character
-    } else if (buttonText == "=") {
-      // provide results
-    } else {
-      // update the screen with buttonText
-    }
+    setState(() {
+      if (buttonText == "C") {
+        // clear all the characters
+        expression = "";
+        equation = "0";
+        print("clear screen");
+      } else if (buttonText == "D") {
+        try {
+          // delete previos character
+          int index = expression.length - 1;
+          expression = expression.substring(0, index);
+          if (expression.length == 0) {
+            // expression = "0";
+            equation = "0";
+            return;
+          }
+          equation = expression;
+        } catch (err) {
+          print('Screen is clear');
+          equation = "0";
+        }
+      } else if (buttonText == "=") {
+        // provide results
+        // String temp = equation;
+        // result = equation;
+        // equation = temp;
+        // increase size fo result
+         equationSize = 32;
+        resultSize = 51.52;
+        // swapp color to show where the focus is at
+        resultColor = Colors.white;
+        expressionColor = Colors.white60;
+        // calculte for results
+        expression = expression.trim();
+
+        try {
+          // result = "Error...";
+        } catch (err) {
+          result = "Error...";
+        }
+      } else {
+        // change font size to show focus and hierachy
+        equationSize = 44;
+        resultSize = 32;
+        // swapp color to show where the focus is at
+        expressionColor = Colors.white;
+        resultColor = Colors.white60;
+        // update the screen with buttonText
+        expression = expression + buttonText;
+        equation = expression;
+      }
+    });
   }
 
-  CustomBtn( 
-    // Color? buttonColor2 ,
-    {
+  CustomBtn(
+      // Color? buttonColor2 ,
+      {
     required String buttonText,
     required double buttonHeight,
     required Color buttonColor,
     Color? buttonColor2 = Colors.transparent,
   }) {
     // buttonColor2 = Colors.transparent;
-    var isTapped=false;
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
+    var isTapped = false;
+    return InkWell(
+      radius: buttonHeight/2,
+      borderRadius: BorderRadius.circular(buttonHeight/3),
+      // behavior: HitTestBehavior.deferToChild,
       onTap: () => buttonPressed(buttonText),
       child: Container(
           // padding: EdgeInsets.all(16),
-          // margin: EdgeInsets.all(3),
+          margin: EdgeInsets.all(3),
           alignment: Alignment.center,
           height: MediaQuery.of(context).size.height * 0.11 * buttonHeight,
           decoration: BoxDecoration(
-              color: isTapped
-                  ? ThemeData.dark().canvasColor.withOpacity(0.8)
-                  : buttonColor2,
-              // borderRadius: BorderRadius.circular(5),
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(5),
-                bottomRight: Radius.circular(5),
-              ),
-              border: Border.all(
-                  width: 1, color: ThemeData.dark().backgroundColor)),
+            color: isTapped
+                ? ThemeData.dark().canvasColor.withOpacity(0.8)
+                : buttonColor2,
+            borderRadius: BorderRadius.circular(15),
+            // borderRadius: const BorderRadius.only(
+            //   bottomLeft: Radius.circular(5),
+            //   bottomRight: Radius.circular(5),
+            // ),
+            // border: Border.all(
+            //     width: 1, color: ThemeData.dark().backgroundColor)
+          ),
           child: Text(buttonText,
               style: TextStyle(
                 fontSize: 32,
@@ -112,14 +160,14 @@ class _CalculatorPageState extends State<CalculatorPage> {
                   padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
                   child: Text(result,
                       style:
-                          TextStyle(fontSize: resultSize, color: Colors.white)),
+                          TextStyle(fontSize: resultSize, color: resultColor)),
                 ),
                 Container(
                   alignment: Alignment.centerRight,
                   padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
                   child: Text(equation,
                       style: TextStyle(
-                          fontSize: equationSize, color: Colors.white60)),
+                          fontSize: equationSize, color: expressionColor)),
                 ),
               ],
             ),
@@ -134,26 +182,27 @@ class _CalculatorPageState extends State<CalculatorPage> {
           ),
           Container(
             alignment: Alignment.center,
-            padding:
-                const EdgeInsets.only(bottom: 2, top: 1, right: 1, left: 1),
+            // padding:
+            // const EdgeInsets.only(bottom: 2, top: 1, right: 1, left: 1),
             decoration: BoxDecoration(
-                color: ThemeData.dark().cardColor,
-                // color: ThemeData.dark().dividerColor,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(5),
-                  topRight: Radius.circular(5),
+                // color: ThemeData.dark().cardColor,
+                color: Colors.black45,
+                // borderRadius: BorderRadius.circular(50),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(indent / 10),
+                  topRight: Radius.circular(indent / 10),
                 )),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Expanded(
-                    flex: 3,
+                    flex: 6,
                     // width: MediaQuery.of(context).size.width * 0.75,
                     child: Table(
                       children: [
                         TableRow(children: [
                           CustomBtn(
-                            buttonColor: Color.fromARGB(255, 230, 74, 71),
+                            buttonColor: Colors.red.withBlue(12),
                             buttonHeight: 1,
                             buttonText: 'C',
                           ),
@@ -239,40 +288,44 @@ class _CalculatorPageState extends State<CalculatorPage> {
                       ],
                     )),
                 Expanded(
+                    flex: 2,
                     // width: MediaQuery.of(context).size.width * 0.24,
                     child: Table(
-                  children: [
-                    TableRow(children: [
-                      CustomBtn(
-                        buttonColor: seed,
-                        buttonHeight: 1,
-                        buttonText: 'D',
-                      ),
-                    ]),
-                    TableRow(children: [
-                      CustomBtn(
-                        buttonColor: seed,
-                        buttonHeight: 1,
-                        buttonText: '-',
-                      ),
-                    ]),
-                    TableRow(children: [
-                      CustomBtn(
-                        buttonColor: seed,
-                        buttonHeight: 1,
-                        buttonText: '+',
-                      ),
-                    ]),
-                    TableRow(children: [
-                      CustomBtn(
-                        buttonColor2: Color.fromARGB(255, 78, 212, 83),
-                        buttonColor: Colors.white,
-                        buttonHeight: 2,
-                        buttonText: '=',
-                      ),
-                    ]),
-                  ],
-                )),
+                      children: [
+                        TableRow(children: [
+                          CustomBtn(
+                            buttonColor: seed,
+                            buttonHeight: 1,
+                            buttonText: 'D',
+                          ),
+                        ]),
+                        TableRow(children: [
+                          CustomBtn(
+                            buttonColor: seed,
+                            buttonHeight: 1,
+                            buttonText: '-',
+                          ),
+                        ]),
+                        TableRow(children: [
+                          CustomBtn(
+                            buttonColor: seed,
+                            buttonHeight: 1,
+                            buttonText: '+',
+                          ),
+                        ]),
+                        TableRow(children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8),
+                            child: CustomBtn(
+                              buttonColor2: Color.fromARGB(255, 78, 212, 83),
+                              buttonColor: Colors.white,
+                              buttonHeight: 2,
+                              buttonText: '=',
+                            ),
+                          )
+                        ]),
+                      ],
+                    )),
               ],
             ),
           )

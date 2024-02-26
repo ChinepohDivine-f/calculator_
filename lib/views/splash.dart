@@ -5,7 +5,7 @@ import 'package:calculator/views/home_page.dart';
 import 'package:flutter/material.dart';
 
 class SplashPage extends StatefulWidget {
-  const SplashPage({super.key});  
+  const SplashPage({super.key});
 
   @override
   State<SplashPage> createState() => _SplashPageState();
@@ -15,25 +15,25 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     Timer(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const CalculatorPage()));
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => const CalculatorPage()));
     });
 
     initState() {
       super.initState();
     }
+
     Color color2 = Colors.black45;
     Color color1 = Colors.white;
     bool isShadow = true;
 
     Timer(const Duration(seconds: 3), () {
-
       setState(() {
-         Color temp = color1; 
-         color1 = color2;
-          color2 = temp;
-      isShadow = false;
+        Color temp = color1;
+        color1 = color2;
+        color2 = temp;
+        isShadow = false;
       });
-     
     });
     return Scaffold(
         backgroundColor: color2,
@@ -50,10 +50,7 @@ class _SplashPageState extends State<SplashPage> {
                   const SizedBox(height: 15),
                   Text(
                     "Calculator",
-                    style: TextStyle(
-                      fontSize: 16,
-                        color:
-                            color1),
+                    style: TextStyle(fontSize: 16, color: color1),
                   ),
                 ],
               ),
@@ -76,28 +73,29 @@ class _SplashPageState extends State<SplashPage> {
         height: 80,
         width: 80,
         decoration: BoxDecoration(
-            color: Color1,
-            borderRadius: BorderRadius.circular(5),
-            boxShadow: Shadow? [BoxShadow(
-                color: Color1,
-                offset: Offset(-2, -2), blurRadius: 10,
-              ),
-            
-              BoxShadow(
-                color: Color2,
-                offset: Offset(5, 5), blurRadius: 20,
-              ),
-              
-            ] : [],
-            // border: Border.all(
-            //     color: Color2)
-            ),
+          color: Color1,
+          borderRadius: BorderRadius.circular(5),
+          boxShadow: Shadow
+              ? [
+                  BoxShadow(
+                    color: Color1,
+                    offset: Offset(-2, -2),
+                    blurRadius: 10,
+                  ),
+                  BoxShadow(
+                    color: Color2,
+                    offset: Offset(5, 5),
+                    blurRadius: 20,
+                  ),
+                ]
+              : [],
+          // border: Border.all(
+          //     color: Color2)
+        ),
         child: Center(
             child: Text(
           "=",
-          style: TextStyle(
-              fontSize: 65,
-              color: Colors.blueAccent),
+          style: TextStyle(fontSize: 65, color: Colors.blueAccent),
         )));
   }
 }
