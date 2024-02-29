@@ -23,7 +23,7 @@ class _SplashPageState extends State<SplashPage> {
       super.initState();
     }
 
-    Color color2 = Colors.black45;
+    Color color2 = Colors.black;
     Color color1 = Colors.white;
     bool isShadow = true;
 
@@ -39,7 +39,7 @@ class _SplashPageState extends State<SplashPage> {
         backgroundColor: color2,
         body: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -54,15 +54,16 @@ class _SplashPageState extends State<SplashPage> {
                   ),
                 ],
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  CircularProgressIndicator.adaptive(
-                    backgroundColor:
-                        ColorScheme.fromSeed(seedColor: seed).background,
-                  ),
-                ],
-              )
+              // Column(
+              //   mainAxisAlignment: MainAxisAlignment.end,
+              //   children: [
+              //     CircularProgressIndicator(
+              //       // valueColor:Animation,
+              //       backgroundColor:
+              //           ColorScheme.fromSeed(seedColor: seed).background,
+              //     ),
+              //   ],
+              // )
             ],
           ),
         ));
@@ -78,12 +79,12 @@ class _SplashPageState extends State<SplashPage> {
           boxShadow: Shadow
               ? [
                   BoxShadow(
-                    color: Color1,
+                    color: Color1.withOpacity(0.3),
                     offset: Offset(-2, -2),
                     blurRadius: 10,
                   ),
                   BoxShadow(
-                    color: Color2,
+                    color: Color2.withOpacity(0.3),
                     offset: Offset(5, 5),
                     blurRadius: 20,
                   ),
@@ -95,7 +96,7 @@ class _SplashPageState extends State<SplashPage> {
         child: Center(
             child: Text(
           "=",
-          style: TextStyle(fontSize: 65, color: Colors.blueAccent),
+          style: TextStyle(fontSize: 65, color: Colors.blue),
         )));
   }
 }

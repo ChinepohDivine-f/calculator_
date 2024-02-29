@@ -3,6 +3,7 @@ import 'package:calculator/components/seed_color.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:calculator/components/seed_color.dart';
+import 'package:math_expressions/math_expressions.dart';
 
 class CalculatorPage extends StatefulWidget {
   const CalculatorPage({super.key});
@@ -15,25 +16,75 @@ class _CalculatorPageState extends State<CalculatorPage> {
   String equation = "0";
   String result = "0";
   String expression = "";
-  double equationSize = 32;
-  double resultSize = 51.52;
+  double equationSize = 20;
+  double resultSize = 34;
   Color resultColor = Colors.white;
-  Color expressionColor = Colors.white60;
+  Color expressionColor = Colors.white70;
+
+  bool _isDarkMode = true;
+
+  void _toggleTheme(bool newValue) {
+    setState(() {
+      _isDarkMode = newValue;
+    });
+  }
+
+  Map<String, String> history = {};
+
+  // Function to add new entries to the map
+  void addEntry(String equation, String result) {
+    setState(() {
+      history[equation] = result;
+    });
+  }
+
+  // Function to check if the map is empty
+  bool isEmpty() {
+    return history.isEmpty;
+  }
+
+  String? calculateExpression(String expression) {
+    try {
+      ContextModel context = ContextModel();
+      Expression exp = Parser().parse(expression); // Use Parser().parse
+      double result = exp.evaluate(EvaluationType.REAL, context);
+      return result.toString();
+      // } on EvalException catch (e) {
+      //   // Handle the error gracefully
+      //   return 0.00;
+    } catch (e) {
+      return 'Error';
+    }
+  }
 
   buttonPressed(String buttonText) {
     setState(() {
       if (buttonText == "C") {
+        // change font size to show focus and hierachy
+        equationSize = 34;
+        resultSize = 20;
+        // swapp color to show where the focus is at
+        expressionColor = Colors.white;
+        resultColor = Colors.white70;
         // clear all the characters
+        if (equation == '0') {
+          result = '0.0';
+        }
         expression = "";
         equation = "0";
         print("clear screen");
-      } else if (buttonText == "D") {
+      } else if (buttonText == "␡") {
         try {
+          // change font size to show focus and hierachy
+          equationSize = 34;
+          resultSize = 20;
+          // swapp color to show where the focus is at
+          expressionColor = Colors.white;
+          resultColor = Colors.white70;
           // delete previos character
           int index = expression.length - 1;
           expression = expression.substring(0, index);
           if (expression.length == 0) {
-            // expression = "0";
             equation = "0";
             return;
           }
@@ -42,32 +93,34 @@ class _CalculatorPageState extends State<CalculatorPage> {
           print('Screen is clear');
           equation = "0";
         }
-      } else if (buttonText == "=") {
-        // provide results
-        // String temp = equation;
-        // result = equation;
-        // equation = temp;
-        // increase size fo result
-         equationSize = 32;
-        resultSize = 51.52;
+      } else if (buttonText == "＝") {
+        equationSize = 20;
+        resultSize = 34;
         // swapp color to show where the focus is at
         resultColor = Colors.white;
-        expressionColor = Colors.white60;
+        expressionColor = Colors.white70;
         // calculte for results
         expression = expression.trim();
+        expression = expression.replaceAll('x', '*');
 
-        try {
-          // result = "Error...";
-        } catch (err) {
-          result = "Error...";
+        result = calculateExpression(expression).toString();
+        // swap expression and result
+        expression = result;
+        // result = '0.0';
+        // Handle submission of equation (e.g., calculate result)
+        // Replace with actual calculation
+        if (result != 'Error') {
+          addEntry(equation, result);
+          print(result);
         }
       } else {
         // change font size to show focus and hierachy
-        equationSize = 44;
-        resultSize = 32;
+        equationSize = 34;
+        resultSize = 20;
+
         // swapp color to show where the focus is at
         expressionColor = Colors.white;
-        resultColor = Colors.white60;
+        resultColor = Colors.white70;
         // update the screen with buttonText
         expression = expression + buttonText;
         equation = expression;
@@ -86,30 +139,25 @@ class _CalculatorPageState extends State<CalculatorPage> {
     // buttonColor2 = Colors.transparent;
     var isTapped = false;
     return InkWell(
-      radius: buttonHeight/2,
-      borderRadius: BorderRadius.circular(buttonHeight/3),
+      radius: buttonHeight / 2,
+      borderRadius: BorderRadius.circular(buttonHeight / 3),
       // behavior: HitTestBehavior.deferToChild,
       onTap: () => buttonPressed(buttonText),
       child: Container(
           // padding: EdgeInsets.all(16),
-          margin: EdgeInsets.all(3),
+          margin: const EdgeInsets.all(0.5),
           alignment: Alignment.center,
-          height: MediaQuery.of(context).size.height * 0.11 * buttonHeight,
+          height: MediaQuery.of(context).size.height * 0.1 * buttonHeight,
           decoration: BoxDecoration(
             color: isTapped
                 ? ThemeData.dark().canvasColor.withOpacity(0.8)
                 : buttonColor2,
-            borderRadius: BorderRadius.circular(15),
-            // borderRadius: const BorderRadius.only(
-            //   bottomLeft: Radius.circular(5),
-            //   bottomRight: Radius.circular(5),
-            // ),
-            // border: Border.all(
-            //     width: 1, color: ThemeData.dark().backgroundColor)
+            borderRadius: BorderRadius.circular(5),
           ),
           child: Text(buttonText,
               style: TextStyle(
-                fontSize: 32,
+                fontSize: 28,
+                fontWeight: FontWeight.w500,
                 color: isTapped
                     ? ThemeData.dark().canvasColor.withOpacity(0.8)
                     : buttonColor,
@@ -117,226 +165,351 @@ class _CalculatorPageState extends State<CalculatorPage> {
     );
   }
 
+  final GlobalKey<ScaffoldState> _globalKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     double? indent = MediaQuery.of(context).size.width -
         (MediaQuery.of(context).size.width * 0.57);
     return Scaffold(
+      key: _globalKey,
       backgroundColor: ThemeData.dark().scaffoldBackgroundColor,
       appBar: AppBar(
-          bottomOpacity: 5,
-          backgroundColor: ThemeData.dark().scaffoldBackgroundColor,
-          title:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            // IconButton(onPressed: () {print('dont touch me sir...');}, icon: Icon(Icons.menu_rounded, color: Colors.white),),
-            const Text('C A L C U L A T O R',
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    color: Colors.white)),
-            // Switch(
-            //   value: true,
-            //   onChanged: (value) {},
-            // )
-            IconButton(
-                onPressed: () {}, icon: Icon(Icons.menu, color: Colors.white))
-          ])),
-      // appBar: AppBar(title: SliverAppBar(title: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      //    Text('C A L C U L A T O R',
-      //       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white)),
-      //       Switch(value: true, onChanged: (value) {},)]))),
-      body: Column(
-        children: [
-          // cupertino
-          Expanded(
-            flex: 8,
-            child: ListView(
-              shrinkWrap: true,
-              reverse: true,
-              // mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Container(
-                  alignment: Alignment.centerRight,
-                  padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
-                  child: Text(result,
-                      style:
-                          TextStyle(fontSize: resultSize, color: resultColor)),
+        scrolledUnderElevation: 0,
+        elevation: 0,
+        shadowColor: Colors.black38,
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        backgroundColor: ThemeData.dark().scaffoldBackgroundColor,
+        title:   _customAppBar(_globalKey)),
+      body: SafeArea(
+        child: Column(
+          children: [
+            // App bar
+            // Padding(
+                // padding: EdgeInsets.fromLTRB(15, 15, 10, 3),
+                // child: _customAppBar(_globalKey)),
+            // cupertino
+            Expanded(
+              child: Container(
+                margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
+                decoration: BoxDecoration(
+                  color: ThemeData.dark().focusColor,
+                 borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(3),
+                  topRight: Radius.circular(3),
+                        bottomLeft: Radius.circular(20),
+                        bottomRight: Radius.circular(20)),
                 ),
-                Container(
-                  alignment: Alignment.centerRight,
-                  padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
-                  child: Text(equation,
-                      style: TextStyle(
-                          fontSize: equationSize, color: expressionColor)),
+                child: Container(
+                  // padding: EdgeInsets.all(4),
+                  alignment: Alignment.bottomLeft,
+                  margin: EdgeInsets.fromLTRB(1, 0, 1, 5),
+
+                  decoration: BoxDecoration(
+                    color: ThemeData.dark().scaffoldBackgroundColor.withOpacity(0.8),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(3),
+                  topRight: Radius.circular(3),
+                        bottomLeft: Radius.circular(20),
+                        bottomRight: Radius.circular(20)),
+                  ),
+                  child: ListView(
+                    physics: BouncingScrollPhysics(),
+                    shrinkWrap: true,
+                    reverse: true,
+                    // mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Container(
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.fromLTRB(15, 10, 15, 5),
+                        child: Text(result,
+                            style: TextStyle(
+                                fontSize: resultSize, color: resultColor)),
+                      ),
+                      // SizedBox(height: 15,),
+                      Container(
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
+                        child: Text(equation,
+                            style: TextStyle(
+                                fontSize: equationSize,
+                                color: expressionColor)),
+                      ),
+                      const Row(
+                        children: [
+                          Expanded(
+                              flex: 1,
+                              child: Divider(
+                                thickness: 0.3,
+                              )),
+                          Text(
+                            'History ⇧',
+                            style:
+                                TextStyle(color: Colors.white60, fontSize: 14),
+                          ),
+                          Expanded(
+                              flex: 15,
+                              child: Divider(
+                                thickness: 0.3,
+                              )),
+                        ],
+                      ),
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+
+                        // Display the map contents
+                        child: isEmpty()
+                            ? Text('No entries yet.',
+                                style:
+                                    TextStyle(color: Colors.white))
+                            : ListView.builder(
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: history.length,
+                                itemBuilder: (context, index) {
+                                  String equation =
+                                      history.keys.elementAt(index);
+                                  String result =
+                                      history.values.elementAt(index);
+                                  return ListTile(
+                                    title: Text(
+                                      equation + "\t\t=\t\t" + result,
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w300,
+                                          color: Colors.white),
+                                    ),
+                                    // trailing: Text(result),
+                                    // title: Text(equation),
+                                    // subtitle: Text(result),
+                                  );
+                                },
+                              ),
+                        //   child: Text(
+
+                        //       // history == {}
+                        //       //     ? equation + ' = ' + result
+                        //       //     : 'Nothing to see here',
+                        //       style:
+                        //           TextStyle(fontSize: 30, color: Colors.white70)),
+                        // ),
+                        // ListView.builder(itemBuilder: (context, 1){})
+                      ),
+                    ],
+                  ),
                 ),
-              ],
+              ),
             ),
-          ),
-          Expanded(
-            child: Divider(
-              thickness: 2,
-              indent: indent,
-              endIndent: indent,
-              color: ThemeData.dark().dividerColor,
-            ),
-          ),
-          Container(
-            alignment: Alignment.center,
-            // padding:
-            // const EdgeInsets.only(bottom: 2, top: 1, right: 1, left: 1),
-            decoration: BoxDecoration(
-                // color: ThemeData.dark().cardColor,
-                color: Colors.black45,
-                // borderRadius: BorderRadius.circular(50),
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(indent / 10),
-                  topRight: Radius.circular(indent / 10),
-                )),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                    flex: 6,
-                    // width: MediaQuery.of(context).size.width * 0.75,
-                    child: Table(
-                      children: [
-                        TableRow(children: [
-                          CustomBtn(
-                            buttonColor: Colors.red.withBlue(12),
-                            buttonHeight: 1,
-                            buttonText: 'C',
-                          ),
-                          CustomBtn(
-                            buttonColor: seed,
-                            buttonHeight: 1,
-                            buttonText: '/',
-                          ),
-                          CustomBtn(
-                            buttonColor: seed,
-                            buttonHeight: 1,
-                            buttonText: 'x',
-                          ),
-                        ]),
-                        TableRow(children: [
-                          CustomBtn(
-                            buttonColor: Colors.white,
-                            buttonHeight: 1,
-                            buttonText: '7',
-                          ),
-                          CustomBtn(
-                            buttonColor: Colors.white,
-                            buttonHeight: 1,
-                            buttonText: '8',
-                          ),
-                          CustomBtn(
-                            buttonColor: Colors.white,
-                            buttonHeight: 1,
-                            buttonText: '9',
-                          ),
-                        ]),
-                        TableRow(children: [
-                          CustomBtn(
-                            buttonColor: Colors.white,
-                            buttonHeight: 1,
-                            buttonText: '4',
-                          ),
-                          CustomBtn(
-                            buttonColor: Colors.white,
-                            buttonHeight: 1,
-                            buttonText: '5',
-                          ),
-                          CustomBtn(
-                            buttonColor: Colors.white,
-                            buttonHeight: 1,
-                            buttonText: '6',
-                          ),
-                        ]),
-                        TableRow(children: [
-                          CustomBtn(
-                            buttonColor: Colors.white,
-                            buttonHeight: 1,
-                            buttonText: '1',
-                          ),
-                          CustomBtn(
-                            buttonColor: Colors.white,
-                            buttonHeight: 1,
-                            buttonText: '2',
-                          ),
-                          CustomBtn(
-                            buttonColor: Colors.white,
-                            buttonHeight: 1,
-                            buttonText: '3',
-                          ),
-                        ]),
-                        TableRow(children: [
-                          CustomBtn(
-                            buttonColor: Colors.white,
-                            buttonHeight: 1,
-                            buttonText: '00',
-                          ),
-                          CustomBtn(
-                            buttonColor: Colors.white,
-                            buttonHeight: 1,
-                            buttonText: '0',
-                          ),
-                          CustomBtn(
-                            buttonColor: Colors.white,
-                            buttonHeight: 1,
-                            buttonText: '.',
-                          ),
-                        ]),
-                      ],
-                    )),
-                Expanded(
-                    flex: 2,
-                    // width: MediaQuery.of(context).size.width * 0.24,
-                    child: Table(
-                      children: [
-                        TableRow(children: [
-                          CustomBtn(
-                            buttonColor: seed,
-                            buttonHeight: 1,
-                            buttonText: 'D',
-                          ),
-                        ]),
-                        TableRow(children: [
-                          CustomBtn(
-                            buttonColor: seed,
-                            buttonHeight: 1,
-                            buttonText: '-',
-                          ),
-                        ]),
-                        TableRow(children: [
-                          CustomBtn(
-                            buttonColor: seed,
-                            buttonHeight: 1,
-                            buttonText: '+',
-                          ),
-                        ]),
-                        TableRow(children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8),
-                            child: CustomBtn(
-                              buttonColor2: Color.fromARGB(255, 78, 212, 83),
-                              buttonColor: Colors.white,
-                              buttonHeight: 2,
-                              buttonText: '=',
+            // Expanded(
+            //         child: Divider(
+            //           thickness: 2,
+            //           indent: indent,
+            //           endIndent: indent,
+            //           color: ThemeData.dark().dividerColor,
+            //         ),
+            //       ),
+            Container(
+              alignment: Alignment.center,
+              // padding:
+              // const EdgeInsets.only(bottom: 2, top: 1, right: 1, left: 1),
+              decoration: BoxDecoration(
+                  // color: ThemeData.dark().cardColor,
+                  color: Colors.black45,
+                  // borderRadius: BorderRadius.circular(50),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(5),
+                    topRight: Radius.circular(5),
+                  )),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                      flex: 6,
+                      // width: MediaQuery.of(context).size.width * 0.75,
+                      child: Table(
+                        children: [
+                          TableRow(children: [
+                            CustomBtn(
+                              buttonColor: Colors.red.withBlue(15),
+                              buttonHeight: 1,
+                              buttonText: 'C',
                             ),
-                          )
-                        ]),
-                      ],
-                    )),
-              ],
-            ),
-          )
-        ],
+                            CustomBtn(
+                              buttonColor: seed,
+                              buttonHeight: 1,
+                              buttonText: '/',
+                            ),
+                            CustomBtn(
+                              buttonColor: seed,
+                              buttonHeight: 1,
+                              buttonText: 'x',
+                            ),
+                          ]),
+                          TableRow(children: [
+                            CustomBtn(
+                              buttonColor: Colors.white,
+                              buttonHeight: 1,
+                              buttonText: '7',
+                            ),
+                            CustomBtn(
+                              buttonColor: Colors.white,
+                              buttonHeight: 1,
+                              buttonText: '8',
+                            ),
+                            CustomBtn(
+                              buttonColor: Colors.white,
+                              buttonHeight: 1,
+                              buttonText: '9',
+                            ),
+                          ]),
+                          TableRow(children: [
+                            CustomBtn(
+                              buttonColor: Colors.white,
+                              buttonHeight: 1,
+                              buttonText: '4',
+                            ),
+                            CustomBtn(
+                              buttonColor: Colors.white,
+                              buttonHeight: 1,
+                              buttonText: '5',
+                            ),
+                            CustomBtn(
+                              buttonColor: Colors.white,
+                              buttonHeight: 1,
+                              buttonText: '6',
+                            ),
+                          ]),
+                          TableRow(children: [
+                            CustomBtn(
+                              buttonColor: Colors.white,
+                              buttonHeight: 1,
+                              buttonText: '1',
+                            ),
+                            CustomBtn(
+                              buttonColor: Colors.white,
+                              buttonHeight: 1,
+                              buttonText: '2',
+                            ),
+                            CustomBtn(
+                              buttonColor: Colors.white,
+                              buttonHeight: 1,
+                              buttonText: '3',
+                            ),
+                          ]),
+                          TableRow(children: [
+                            CustomBtn(
+                              buttonColor: Colors.white,
+                              buttonHeight: 1,
+                              buttonText: '00',
+                            ),
+                            CustomBtn(
+                              buttonColor: Colors.white,
+                              buttonHeight: 1,
+                              buttonText: '0',
+                            ),
+                            CustomBtn(
+                              buttonColor: Colors.white,
+                              buttonHeight: 1,
+                              buttonText: '.',
+                            ),
+                          ]),
+                        ],
+                      )),
+                  Expanded(
+                      flex: 2,
+                      // width: MediaQuery.of(context).size.width * 0.30,
+                      child: Table(
+                        children: [
+                          TableRow(children: [
+                            CustomBtn(
+                              buttonColor: seed,
+                              buttonHeight: 1,
+                              buttonText: '␡',
+                            ),
+                          ]),
+                          TableRow(children: [
+                            CustomBtn(
+                              buttonColor: seed,
+                              buttonHeight: 1,
+                              buttonText: '-',
+                            ),
+                          ]),
+                          TableRow(children: [
+                            CustomBtn(
+                              buttonColor: seed,
+                              buttonHeight: 1,
+                              buttonText: '+',
+                            ),
+                          ]),
+                          TableRow(children: [
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 8),
+                              child: CustomBtn(
+                                buttonColor2: Color.fromARGB(255, 78, 212, 83),
+                                buttonColor: Colors.white,
+                                buttonHeight: 2,
+                                buttonText: '＝',
+                              ),
+                            )
+                          ]),
+                        ],
+                      )),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+      drawer: Drawer(
+        key: _globalKey,
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
+        shadowColor: Colors.white70,
+        child: Container(
+          padding: EdgeInsets.only(top: 20, bottom: 40),
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width * 0.75,
+          color: Colors.black87,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Container(color: Colors.blue, height: 70),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Container(color: Colors.blue, height: 70),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Container(color: Colors.blue, height: 70),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
+
+  Row _customAppBar(_globalKey) {
+    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      // IconButton(onPressed: () {print('dont touch me sir...');}, icon: Icon(Icons.menu_rounded, color: Colors.white),),
+      const Text('C  A  L  C  U  L  A  T  O  R',
+          style: TextStyle(
+              fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white)),
+      //  Switch(
+      //         value: _isDarkMode,
+      //         onChanged: _toggleTheme, // Function to toggle theme mode
+      //       ),
+      // IconButton(
+      //     onPressed: () => _globalKey.currentState!.openDrawer,
+      //     // Scaffold.of(context).openDrawer(),
+      //     icon: Icon(CupertinoIcons.settings_solid, color: Colors.white))
+    ]);
+  }
 }
-
-
-
 
 // class CustomBtn extends StatelessWidget {
 //   const CustomBtn({
@@ -352,8 +525,6 @@ class _CalculatorPageState extends State<CalculatorPage> {
 //   final Color? buttonColor;
 //   final Color buttonColor2;
 //   final bool isTapped;
-  
-
 
 //   @override
 //   Widget build(BuildContext context) {
@@ -378,7 +549,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
 //                   width: 1, color: ThemeData.dark().backgroundColor)),
 //           child: Text(buttonText,
 //               style: TextStyle(
-//                 fontSize: 32,
+//                 fontSize: 34,
 //                 color: isTapped
 //                     ? ThemeData.dark().canvasColor.withOpacity(0.8)
 //                     : buttonColor,
