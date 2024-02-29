@@ -79,12 +79,12 @@ class _SplashPageState extends State<SplashPage> {
           boxShadow: Shadow
               ? [
                   BoxShadow(
-                    color: Color1.withOpacity(0.3),
+                    color: Color1.withOpacity(0.5),
                     offset: Offset(-2, -2),
                     blurRadius: 10,
                   ),
                   BoxShadow(
-                    color: Color2.withOpacity(0.3),
+                    color: Color2.withOpacity(0.5),
                     offset: Offset(5, 5),
                     blurRadius: 20,
                   ),

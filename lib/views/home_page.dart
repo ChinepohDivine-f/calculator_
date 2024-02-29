@@ -20,6 +20,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
   double resultSize = 34;
   Color resultColor = Colors.white;
   Color expressionColor = Colors.white70;
+  String ans = "";
 
   bool _isDarkMode = true;
 
@@ -59,7 +60,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
 
   buttonPressed(String buttonText) {
     setState(() {
-      if (buttonText == "C") {
+      if (buttonText == "⎚") {
         // change font size to show focus and hierachy
         equationSize = 34;
         resultSize = 20;
@@ -67,9 +68,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
         expressionColor = Colors.white;
         resultColor = Colors.white70;
         // clear all the characters
-        if (equation == '0') {
-          result = '0.0';
-        }
+        result = '0.0';
         expression = "";
         equation = "0";
         print("clear screen");
@@ -81,12 +80,26 @@ class _CalculatorPageState extends State<CalculatorPage> {
           // swapp color to show where the focus is at
           expressionColor = Colors.white;
           resultColor = Colors.white70;
+          // delete if the word is Error
+          if (expression == "Error") {
+            expression = '';
+            equation = '0';
+            result = '0.0';
+          }
           // delete previos character
           int index = expression.length - 1;
           expression = expression.substring(0, index);
+          result = '0.0';
           if (expression.length == 0) {
             equation = "0";
             return;
+          }
+          expression = expression.replaceAll('x', '*');
+          expression = expression.replaceAll('÷', '/');
+          expression = expression.replaceAll('%', '*1/100');
+          String temp = calculateExpression(expression).toString();
+          if (temp != 'Error') {
+            result = temp;
           }
           equation = expression;
         } catch (err) {
@@ -96,34 +109,47 @@ class _CalculatorPageState extends State<CalculatorPage> {
       } else if (buttonText == "＝") {
         equationSize = 20;
         resultSize = 34;
+        print(expression);
         // swapp color to show where the focus is at
         resultColor = Colors.white;
         expressionColor = Colors.white70;
         // calculte for results
         expression = expression.trim();
         expression = expression.replaceAll('x', '*');
-
+        expression = expression.replaceAll('÷', '/');
+        expression = expression.replaceAll('%', '*1/100');
         result = calculateExpression(expression).toString();
         // swap expression and result
-        expression = result;
+        /*expression = result;*/
+
         // result = '0.0';
         // Handle submission of equation (e.g., calculate result)
         // Replace with actual calculation
         if (result != 'Error') {
+          // store result in history map
           addEntry(equation, result);
+          // store result in Ans variable
+          ans = result;
           print(result);
         }
       } else {
         // change font size to show focus and hierachy
         equationSize = 34;
         resultSize = 20;
-
         // swapp color to show where the focus is at
         expressionColor = Colors.white;
         resultColor = Colors.white70;
         // update the screen with buttonText
         expression = expression + buttonText;
         equation = expression;
+        // the autocalculate section of the code
+        expression = expression.replaceAll('x', '*');
+        expression = expression.replaceAll('÷', '/');
+        expression = expression.replaceAll('%', '*1/100');
+        String temp = calculateExpression(expression).toString();
+        if (temp != 'Error') {
+          result = temp;
+        }
       }
     });
   }
@@ -147,7 +173,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
           // padding: EdgeInsets.all(16),
           margin: const EdgeInsets.all(0.5),
           alignment: Alignment.center,
-          height: MediaQuery.of(context).size.height * 0.1 * buttonHeight,
+          height: MediaQuery.of(context).size.height * 0.105 * buttonHeight,
           decoration: BoxDecoration(
             color: isTapped
                 ? ThemeData.dark().canvasColor.withOpacity(0.8)
@@ -157,7 +183,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
           child: Text(buttonText,
               style: TextStyle(
                 fontSize: 28,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w300,
                 color: isTapped
                     ? ThemeData.dark().canvasColor.withOpacity(0.8)
                     : buttonColor,
@@ -175,131 +201,176 @@ class _CalculatorPageState extends State<CalculatorPage> {
       key: _globalKey,
       backgroundColor: ThemeData.dark().scaffoldBackgroundColor,
       appBar: AppBar(
-        scrolledUnderElevation: 0,
-        elevation: 0,
-        shadowColor: Colors.black38,
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        backgroundColor: ThemeData.dark().scaffoldBackgroundColor,
-        title:   _customAppBar(_globalKey)),
+          scrolledUnderElevation: 0,
+          elevation: 0,
+          forceMaterialTransparency: true,
+          shadowColor: Colors.black,
+          centerTitle: true,
+          automaticallyImplyLeading: false,
+          backgroundColor: ThemeData.dark().scaffoldBackgroundColor,
+          title: _customAppBar(_globalKey)),
       body: SafeArea(
         child: Column(
           children: [
             // App bar
             // Padding(
-                // padding: EdgeInsets.fromLTRB(15, 15, 10, 3),
-                // child: _customAppBar(_globalKey)),
+            // padding: EdgeInsets.fromLTRB(15, 15, 10, 3),
+            // child: _customAppBar(_globalKey)),
             // cupertino
             Expanded(
-              child: Container(
-                margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
-                decoration: BoxDecoration(
-                  color: ThemeData.dark().focusColor,
-                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(3),
-                  topRight: Radius.circular(3),
-                        bottomLeft: Radius.circular(20),
-                        bottomRight: Radius.circular(20)),
-                ),
-                child: Container(
-                  // padding: EdgeInsets.all(4),
-                  alignment: Alignment.bottomLeft,
-                  margin: EdgeInsets.fromLTRB(1, 0, 1, 5),
+              child: Stack(
+                children: [
+                  Container(
+                    margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
+                    decoration: BoxDecoration(
+                      color: ThemeData.dark().focusColor,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(3),
+                          topRight: Radius.circular(3),
+                          bottomLeft: Radius.circular(20),
+                          bottomRight: Radius.circular(20)),
+                    ),
+                    child: Container(
+                      // padding: EdgeInsets.all(4),
+                      alignment: Alignment.bottomLeft,
+                      margin: EdgeInsets.fromLTRB(1, 0, 1, 5),
 
-                  decoration: BoxDecoration(
-                    color: ThemeData.dark().scaffoldBackgroundColor.withOpacity(0.8),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(3),
-                  topRight: Radius.circular(3),
-                        bottomLeft: Radius.circular(20),
-                        bottomRight: Radius.circular(20)),
-                  ),
-                  child: ListView(
-                    physics: BouncingScrollPhysics(),
-                    shrinkWrap: true,
-                    reverse: true,
-                    // mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Container(
-                        alignment: Alignment.centerRight,
-                        padding: const EdgeInsets.fromLTRB(15, 10, 15, 5),
-                        child: Text(result,
-                            style: TextStyle(
-                                fontSize: resultSize, color: resultColor)),
+                      decoration: BoxDecoration(
+                        color: ThemeData.dark()
+                            .scaffoldBackgroundColor
+                            .withOpacity(0.85),
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(3),
+                            topRight: Radius.circular(3),
+                            bottomLeft: Radius.circular(20),
+                            bottomRight: Radius.circular(20)),
                       ),
-                      // SizedBox(height: 15,),
-                      Container(
-                        alignment: Alignment.centerRight,
-                        padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
-                        child: Text(equation,
-                            style: TextStyle(
-                                fontSize: equationSize,
-                                color: expressionColor)),
-                      ),
-                      const Row(
+                      child: ListView(
+                        physics: BouncingScrollPhysics(),
+                        shrinkWrap: true,
+                        reverse: true,
+                        // mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Expanded(
-                              flex: 1,
-                              child: Divider(
-                                thickness: 0.3,
-                              )),
-                          Text(
-                            'History ⇧',
-                            style:
-                                TextStyle(color: Colors.white60, fontSize: 14),
+                          Container(
+                            alignment: Alignment.centerRight,
+                            padding: const EdgeInsets.fromLTRB(15, 15, 15, 5),
+                            child: Text(result,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: resultSize,
+                                    color: resultColor)),
                           ),
-                          Expanded(
-                              flex: 15,
-                              child: Divider(
-                                thickness: 0.3,
-                              )),
+                          // SizedBox(height: 15,),
+                          Container(
+                            alignment: Alignment.centerRight,
+                            padding: const EdgeInsets.fromLTRB(15, 15, 15, 5),
+                            child: Text(equation,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: equationSize,
+                                    color: expressionColor)),
+                          ),
+                          const Row(
+                            children: [
+                              Expanded(
+                                  flex: 1,
+                                  child: Divider(
+                                    thickness: 0.3,
+                                  )),
+                              Text(
+                                'History ⇧',
+                                style: TextStyle(
+                                    color: Colors.white60, fontSize: 14),
+                              ),
+                              Expanded(
+                                  flex: 15,
+                                  child: Divider(
+                                    thickness: 0.3,
+                                  )),
+                            ],
+                          ),
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+
+                            // Display the map contents
+                            child: isEmpty()
+                                ? Text('No entries yet...',
+                                    style: TextStyle(color: Colors.white))
+                                : ListView.builder(
+                                    physics: NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: history.length,
+                                    itemBuilder: (context, index) {
+                                      String equation =
+                                          history.keys.elementAt(index);
+                                      String result =
+                                          history.values.elementAt(index);
+                                      return ListTile(
+                                        title: Text(
+                                          equation,
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w300,
+                                              color: Colors.white),
+                                        ),
+                                        subtitle: Text(
+                                          '\t= ' + result,
+                                          style: TextStyle(
+                                              fontSize: 24,
+                                              fontWeight: FontWeight.w200,
+                                              color: Colors.white54),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                           
+                          ),
                         ],
                       ),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-
-                        // Display the map contents
-                        child: isEmpty()
-                            ? Text('No entries yet.',
-                                style:
-                                    TextStyle(color: Colors.white))
-                            : ListView.builder(
-                                physics: NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: history.length,
-                                itemBuilder: (context, index) {
-                                  String equation =
-                                      history.keys.elementAt(index);
-                                  String result =
-                                      history.values.elementAt(index);
-                                  return ListTile(
-                                    title: Text(
-                                      equation + "\t\t=\t\t" + result,
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w300,
-                                          color: Colors.white),
-                                    ),
-                                    // trailing: Text(result),
-                                    // title: Text(equation),
-                                    // subtitle: Text(result),
-                                  );
-                                },
-                              ),
-                        //   child: Text(
-
-                        //       // history == {}
-                        //       //     ? equation + ' = ' + result
-                        //       //     : 'Nothing to see here',
-                        //       style:
-                        //           TextStyle(fontSize: 30, color: Colors.white70)),
-                        // ),
-                        // ListView.builder(itemBuilder: (context, 1){})
-                      ),
-                    ],
+                    ),
                   ),
-                ),
+                  
+                  Positioned(
+                    bottom: MediaQuery.of(context).size.height * 0.0,
+                    left: MediaQuery.of(context).size.width * 0.80,
+                    // left: double.minPositive,
+                    right: MediaQuery.of(context).size.width * 0.025,
+                    top: 5,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        SizedBox(
+                          height: 50,
+                          width: 50,
+                          child: FloatingActionButton(
+                              shape: CircleBorder(),
+                              backgroundColor:
+                                  ThemeData.dark().focusColor.withOpacity(0.1),
+                              enableFeedback: true,
+                              onPressed: () {
+                                setState(() {
+                                  if (ans == '') {
+                                    return;
+                                  }
+                                  expression = expression + ans;
+                                  String temp = expression;
+                                  equation = temp;
+                                });
+                              },
+                              child: Text(
+                                'Ans',
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.white.withOpacity(0.8),
+                                    fontWeight: FontWeight.w300),
+                              )),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
               ),
             ),
             // Expanded(
@@ -316,7 +387,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
               // const EdgeInsets.only(bottom: 2, top: 1, right: 1, left: 1),
               decoration: BoxDecoration(
                   // color: ThemeData.dark().cardColor,
-                  color: Colors.black45,
+                  color: Colors.black26,
                   // borderRadius: BorderRadius.circular(50),
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(5),
@@ -334,12 +405,12 @@ class _CalculatorPageState extends State<CalculatorPage> {
                             CustomBtn(
                               buttonColor: Colors.red.withBlue(15),
                               buttonHeight: 1,
-                              buttonText: 'C',
+                              buttonText: '⎚',
                             ),
                             CustomBtn(
                               buttonColor: seed,
                               buttonHeight: 1,
-                              buttonText: '/',
+                              buttonText: '÷',
                             ),
                             CustomBtn(
                               buttonColor: seed,
@@ -349,68 +420,68 @@ class _CalculatorPageState extends State<CalculatorPage> {
                           ]),
                           TableRow(children: [
                             CustomBtn(
-                              buttonColor: Colors.white,
+                              buttonColor: Colors.white70,
                               buttonHeight: 1,
                               buttonText: '7',
                             ),
                             CustomBtn(
-                              buttonColor: Colors.white,
+                              buttonColor: Colors.white70,
                               buttonHeight: 1,
                               buttonText: '8',
                             ),
                             CustomBtn(
-                              buttonColor: Colors.white,
+                              buttonColor: Colors.white70,
                               buttonHeight: 1,
                               buttonText: '9',
                             ),
                           ]),
                           TableRow(children: [
                             CustomBtn(
-                              buttonColor: Colors.white,
+                              buttonColor: Colors.white70,
                               buttonHeight: 1,
                               buttonText: '4',
                             ),
                             CustomBtn(
-                              buttonColor: Colors.white,
+                              buttonColor: Colors.white70,
                               buttonHeight: 1,
                               buttonText: '5',
                             ),
                             CustomBtn(
-                              buttonColor: Colors.white,
+                              buttonColor: Colors.white70,
                               buttonHeight: 1,
                               buttonText: '6',
                             ),
                           ]),
                           TableRow(children: [
                             CustomBtn(
-                              buttonColor: Colors.white,
+                              buttonColor: Colors.white70,
                               buttonHeight: 1,
                               buttonText: '1',
                             ),
                             CustomBtn(
-                              buttonColor: Colors.white,
+                              buttonColor: Colors.white70,
                               buttonHeight: 1,
                               buttonText: '2',
                             ),
                             CustomBtn(
-                              buttonColor: Colors.white,
+                              buttonColor: Colors.white70,
                               buttonHeight: 1,
                               buttonText: '3',
                             ),
                           ]),
                           TableRow(children: [
                             CustomBtn(
-                              buttonColor: Colors.white,
+                              buttonColor: Colors.white70,
                               buttonHeight: 1,
-                              buttonText: '00',
+                              buttonText: '%',
                             ),
                             CustomBtn(
-                              buttonColor: Colors.white,
+                              buttonColor: Colors.white70,
                               buttonHeight: 1,
                               buttonText: '0',
                             ),
                             CustomBtn(
-                              buttonColor: Colors.white,
+                              buttonColor: Colors.white70,
                               buttonHeight: 1,
                               buttonText: '.',
                             ),
@@ -498,7 +569,10 @@ class _CalculatorPageState extends State<CalculatorPage> {
       // IconButton(onPressed: () {print('dont touch me sir...');}, icon: Icon(Icons.menu_rounded, color: Colors.white),),
       const Text('C  A  L  C  U  L  A  T  O  R',
           style: TextStyle(
-              fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white)),
+              fontFamily: String.fromEnvironment("poppins"),
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+              color: Colors.white)),
       //  Switch(
       //         value: _isDarkMode,
       //         onChanged: _toggleTheme, // Function to toggle theme mode
