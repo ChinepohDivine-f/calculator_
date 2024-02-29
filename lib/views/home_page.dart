@@ -14,10 +14,10 @@ class CalculatorPage extends StatefulWidget {
 
 class _CalculatorPageState extends State<CalculatorPage> {
   String equation = "0";
-  String result = "0";
+  String result = "";
   String expression = "";
-  double equationSize = 20;
-  double resultSize = 34;
+  double equationSize = 34;
+  double resultSize = 20;
   Color resultColor = Colors.white;
   Color expressionColor = Colors.white70;
   String ans = "";
@@ -68,7 +68,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
         expressionColor = Colors.white;
         resultColor = Colors.white70;
         // clear all the characters
-        result = '0.0';
+        result = '';
         expression = "";
         equation = "0";
         print("clear screen");
@@ -84,12 +84,12 @@ class _CalculatorPageState extends State<CalculatorPage> {
           if (expression == "Error") {
             expression = '';
             equation = '0';
-            result = '0.0';
+            result = '';
           }
           // delete previos character
           int index = expression.length - 1;
           expression = expression.substring(0, index);
-          result = '0.0';
+          result = '';
           if (expression.length == 0) {
             equation = "0";
             return;
@@ -260,11 +260,23 @@ class _CalculatorPageState extends State<CalculatorPage> {
                           Container(
                             alignment: Alignment.centerRight,
                             padding: const EdgeInsets.fromLTRB(15, 15, 15, 5),
-                            child: Text(result,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w300,
-                                    fontSize: resultSize,
-                                    color: resultColor)),
+                            child: IntrinsicWidth(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Flexible(flex: 1,child: Text('=', style: TextStyle(color: Colors.white54),)),
+                                  const SizedBox(width: 5,),
+                                  Flexible(
+                                    flex: (MediaQuery.of(context).size.width*0.90).toInt(),
+                                    child: Text(result,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w300,
+                                            fontSize: resultSize,
+                                            color: resultColor)),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                           // SizedBox(height: 15,),
                           Container(
@@ -367,9 +379,9 @@ class _CalculatorPageState extends State<CalculatorPage> {
                                 });
                               },
                               label: Text(
-                                '🖩',
+                                'Ans',
                                 style: TextStyle(
-                                    fontSize: 20,
+                                    fontSize: 14,
                                     color: Colors.white.withOpacity(0.9),
                                     fontWeight: FontWeight.w300),
                               )),
@@ -449,7 +461,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                               buttonText: '4',
                             ),
                             CustomBtn(
-                              buttonColor: Colors.white70,
+                              buttonColor: Colors.white,
                               buttonHeight: 1,
                               buttonText: '5',
                             ),
