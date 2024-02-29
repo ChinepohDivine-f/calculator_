@@ -94,12 +94,14 @@ class _CalculatorPageState extends State<CalculatorPage> {
             equation = "0";
             return;
           }
-          expression = expression.replaceAll('x', '*');
-          expression = expression.replaceAll('÷', '/');
-          expression = expression.replaceAll('%', '*1/100');
-          String temp = calculateExpression(expression).toString();
-          if (temp != 'Error') {
-            result = temp;
+          String temp = expression.trim();
+        temp = temp.replaceAll('x', '*');
+        temp = temp.replaceAll('÷', '/');
+        temp = temp.replaceAll('%', '*1/100');
+        print(temp);
+          String temp2 = calculateExpression(temp).toString();
+          if (temp2 != 'Error') {
+            result = temp2;
           }
           equation = expression;
         } catch (err) {
@@ -114,11 +116,12 @@ class _CalculatorPageState extends State<CalculatorPage> {
         resultColor = Colors.white;
         expressionColor = Colors.white70;
         // calculte for results
-        expression = expression.trim();
-        expression = expression.replaceAll('x', '*');
-        expression = expression.replaceAll('÷', '/');
-        expression = expression.replaceAll('%', '*1/100');
-        result = calculateExpression(expression).toString();
+        String temp = expression.trim();
+        temp = temp.replaceAll('x', '*');
+        temp = temp.replaceAll('÷', '/');
+        temp = temp.replaceAll('%', '*1/100');
+        print(temp);
+        result = calculateExpression(temp).toString();
         // swap expression and result
         /*expression = result;*/
 
@@ -143,12 +146,15 @@ class _CalculatorPageState extends State<CalculatorPage> {
         expression = expression + buttonText;
         equation = expression;
         // the autocalculate section of the code
-        expression = expression.replaceAll('x', '*');
-        expression = expression.replaceAll('÷', '/');
-        expression = expression.replaceAll('%', '*1/100');
-        String temp = calculateExpression(expression).toString();
-        if (temp != 'Error') {
-          result = temp;
+        String temp = expression.trim();
+        temp = temp.replaceAll('x', '*');
+        temp = temp.replaceAll('÷', '/');
+        temp = temp.replaceAll('%', '*1/100');
+        print(temp);
+        String temp2 = calculateExpression(temp).toString();
+        print(temp2);
+        if (temp2 != 'Error') {
+          result = temp2;
         }
       }
     });
@@ -173,7 +179,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
           // padding: EdgeInsets.all(16),
           margin: const EdgeInsets.all(0.5),
           alignment: Alignment.center,
-          height: MediaQuery.of(context).size.height * 0.105 * buttonHeight,
+          height: MediaQuery.of(context).size.height * 0.1025 * buttonHeight,
           decoration: BoxDecoration(
             color: isTapped
                 ? ThemeData.dark().canvasColor.withOpacity(0.8)
@@ -224,11 +230,11 @@ class _CalculatorPageState extends State<CalculatorPage> {
                     margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
                     decoration: BoxDecoration(
                       color: ThemeData.dark().focusColor,
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(3),
-                          topRight: Radius.circular(3),
-                          bottomLeft: Radius.circular(20),
-                          bottomRight: Radius.circular(20)),
+                      borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                          bottomLeft: Radius.circular(10),
+                          bottomRight: Radius.circular(10)),
                     ),
                     child: Container(
                       // padding: EdgeInsets.all(4),
@@ -240,10 +246,10 @@ class _CalculatorPageState extends State<CalculatorPage> {
                             .scaffoldBackgroundColor
                             .withOpacity(0.85),
                         borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(3),
-                            topRight: Radius.circular(3),
-                            bottomLeft: Radius.circular(20),
-                            bottomRight: Radius.circular(20)),
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                            bottomLeft: Radius.circular(10),
+                            bottomRight: Radius.circular(10)),
                       ),
                       child: ListView(
                         physics: BouncingScrollPhysics(),
@@ -263,7 +269,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                           // SizedBox(height: 15,),
                           Container(
                             alignment: Alignment.centerRight,
-                            padding: const EdgeInsets.fromLTRB(15, 15, 15, 5),
+                            padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
                             child: Text(equation,
                                 style: TextStyle(
                                     fontWeight: FontWeight.w300,
@@ -333,7 +339,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                   
                   Positioned(
                     bottom: MediaQuery.of(context).size.height * 0.0,
-                    left: MediaQuery.of(context).size.width * 0.80,
+                    left: MediaQuery.of(context).size.width * 0.81,
                     // left: double.minPositive,
                     right: MediaQuery.of(context).size.width * 0.025,
                     top: 5,
@@ -344,7 +350,8 @@ class _CalculatorPageState extends State<CalculatorPage> {
                         SizedBox(
                           height: 50,
                           width: 50,
-                          child: FloatingActionButton(
+                          child: FloatingActionButton.extended(
+                            // label: Text('previous save'),
                               shape: CircleBorder(),
                               backgroundColor:
                                   ThemeData.dark().focusColor.withOpacity(0.1),
@@ -359,11 +366,11 @@ class _CalculatorPageState extends State<CalculatorPage> {
                                   equation = temp;
                                 });
                               },
-                              child: Text(
-                                'Ans',
+                              label: Text(
+                                '🖩',
                                 style: TextStyle(
-                                    fontSize: 18,
-                                    color: Colors.white.withOpacity(0.8),
+                                    fontSize: 20,
+                                    color: Colors.white.withOpacity(0.9),
                                     fontWeight: FontWeight.w300),
                               )),
                         ),
@@ -390,8 +397,8 @@ class _CalculatorPageState extends State<CalculatorPage> {
                   color: Colors.black26,
                   // borderRadius: BorderRadius.circular(50),
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(5),
-                    topRight: Radius.circular(5),
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10),
                   )),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -420,24 +427,24 @@ class _CalculatorPageState extends State<CalculatorPage> {
                           ]),
                           TableRow(children: [
                             CustomBtn(
-                              buttonColor: Colors.white70,
+                              buttonColor: Colors.white,
                               buttonHeight: 1,
                               buttonText: '7',
                             ),
                             CustomBtn(
-                              buttonColor: Colors.white70,
+                              buttonColor: Colors.white,
                               buttonHeight: 1,
                               buttonText: '8',
                             ),
                             CustomBtn(
-                              buttonColor: Colors.white70,
+                              buttonColor: Colors.white,
                               buttonHeight: 1,
                               buttonText: '9',
                             ),
                           ]),
                           TableRow(children: [
                             CustomBtn(
-                              buttonColor: Colors.white70,
+                              buttonColor: Colors.white,
                               buttonHeight: 1,
                               buttonText: '4',
                             ),
@@ -447,41 +454,41 @@ class _CalculatorPageState extends State<CalculatorPage> {
                               buttonText: '5',
                             ),
                             CustomBtn(
-                              buttonColor: Colors.white70,
+                              buttonColor: Colors.white,
                               buttonHeight: 1,
                               buttonText: '6',
                             ),
                           ]),
                           TableRow(children: [
                             CustomBtn(
-                              buttonColor: Colors.white70,
+                              buttonColor: Colors.white,
                               buttonHeight: 1,
                               buttonText: '1',
                             ),
                             CustomBtn(
-                              buttonColor: Colors.white70,
+                              buttonColor: Colors.white,
                               buttonHeight: 1,
                               buttonText: '2',
                             ),
                             CustomBtn(
-                              buttonColor: Colors.white70,
+                              buttonColor: Colors.white,
                               buttonHeight: 1,
                               buttonText: '3',
                             ),
                           ]),
                           TableRow(children: [
                             CustomBtn(
-                              buttonColor: Colors.white70,
+                              buttonColor: Colors.white,
                               buttonHeight: 1,
                               buttonText: '%',
                             ),
                             CustomBtn(
-                              buttonColor: Colors.white70,
+                              buttonColor: Colors.white,
                               buttonHeight: 1,
                               buttonText: '0',
                             ),
                             CustomBtn(
-                              buttonColor: Colors.white70,
+                              buttonColor: Colors.white,
                               buttonHeight: 1,
                               buttonText: '.',
                             ),
