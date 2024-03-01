@@ -4,7 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:calculator/components/seed_color.dart';
+import 'package:flutter/rendering.dart';
 import 'package:math_expressions/math_expressions.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 class CalculatorPage extends StatefulWidget {
   const CalculatorPage({super.key});
@@ -14,6 +16,8 @@ class CalculatorPage extends StatefulWidget {
 }
 
 class _CalculatorPageState extends State<CalculatorPage> {
+  final scrollDirection = Axis.vertical;
+
   String equation = "0";
   String result = "";
   String expression = "";
@@ -61,6 +65,8 @@ class _CalculatorPageState extends State<CalculatorPage> {
 
   buttonPressed(String buttonText) {
     setState(() {
+      //reset scroll position 
+        _scrollToIndex();
       if (buttonText == "⎚") {
         // change font size to show focus and hierachy
         equationSize = 34;
@@ -96,10 +102,10 @@ class _CalculatorPageState extends State<CalculatorPage> {
             return;
           }
           String temp = expression.trim();
-        temp = temp.replaceAll('x', '*');
-        temp = temp.replaceAll('÷', '/');
-        temp = temp.replaceAll('%', '*1/100');
-        print(temp);
+          temp = temp.replaceAll('x', '*');
+          temp = temp.replaceAll('÷', '/');
+          temp = temp.replaceAll('%', '*1/100');
+          print(temp);
           String temp2 = calculateExpression(temp).toString();
           if (temp2 != 'Error') {
             result = temp2;
@@ -137,6 +143,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
           print(result);
         }
       } else {
+        
         // change font size to show focus and hierachy
         equationSize = 34;
         resultSize = 20;
@@ -198,6 +205,23 @@ class _CalculatorPageState extends State<CalculatorPage> {
     );
   }
 
+  // scroll controller
+  late AutoScrollController controller ;
+
+  // scroll to index method
+  Future _scrollToIndex() async {
+    await controller.scrollToIndex(1, preferPosition: AutoScrollPosition.end);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    controller = AutoScrollController(
+      // viewportBoundaryGetter: () => Rect.fromLTRB(0, 0, 0, 0),
+      axis: scrollDirection,
+    );
+  }
+
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey();
 
   @override
@@ -254,31 +278,47 @@ class _CalculatorPageState extends State<CalculatorPage> {
                       ),
                       child: ListView(
                         primary: false,
-                        
+                        scrollDirection: scrollDirection,
                         // dragStartBehavior: DragStartBehavior.down,
                         physics: BouncingScrollPhysics(),
                         shrinkWrap: true,
                         reverse: true,
                         // mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Container(
-                            alignment: Alignment.centerRight,
-                            padding: const EdgeInsets.fromLTRB(15, 15, 15, 5),
-                            child: IntrinsicWidth(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Flexible(flex: 1,child: Text('=', style: TextStyle(color: Colors.white54),)),
-                                  const SizedBox(width: 5,),
-                                  Flexible(
-                                    flex: (MediaQuery.of(context).size.width*0.90).toInt(),
-                                    child: Text(result,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w300,
-                                            fontSize: resultSize,
-                                            color: resultColor)),
-                                  ),
-                                ],
+                          AutoScrollTag(
+                            key: ValueKey(1),
+                            controller: controller,
+                            index: 1,
+                            child: Container(
+                              alignment: Alignment.centerRight,
+                              padding: const EdgeInsets.fromLTRB(15, 15, 15, 5),
+                              child: IntrinsicWidth(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Flexible(
+                                        flex: 1,
+                                        child: Text(
+                                          '=',
+                                          style:
+                                              TextStyle(color: Colors.white54),
+                                        )),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Flexible(
+                                      flex: (MediaQuery.of(context).size.width *
+                                              0.90)
+                                          .toInt(),
+                                      child: Text(result,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w300,
+                                              fontSize: resultSize,
+                                              color: resultColor)),
+                                    ),
+                                  ], //calculatorPage
+                                ),
                               ),
                             ),
                           ),
@@ -346,13 +386,11 @@ class _CalculatorPageState extends State<CalculatorPage> {
                                       );
                                     },
                                   ),
-                           
                           ),
                         ],
                       ),
                     ),
                   ),
-                  
                   Positioned(
                     bottom: MediaQuery.of(context).size.height * 0.0,
                     left: MediaQuery.of(context).size.width * 0.81,
@@ -367,7 +405,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                           height: 50,
                           width: 50,
                           child: FloatingActionButton.extended(
-                            // label: Text('previous save'),
+                              // label: Text('previous save'),
                               shape: CircleBorder(),
                               backgroundColor:
                                   ThemeData.dark().focusColor.withOpacity(0.1),

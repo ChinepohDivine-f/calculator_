@@ -32,7 +32,7 @@ dependencies:
     sdk: flutter
   bloc: ^8.0.0
   math_expressions: ^2.4.0
-  scroll_to_index: ^1.0.1
+  scroll_to_index: ^3.0.1
 
 
   # The following adds the Cupertino Icons font to your application.
