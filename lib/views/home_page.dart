@@ -66,7 +66,8 @@ class _CalculatorPageState extends State<CalculatorPage> {
   buttonPressed(String buttonText) {
     setState(() {
       //reset scroll position 
-        _scrollToIndex();
+      scrollToStart();
+      // this sections determines what happens when a button is pressed
       if (buttonText == "⎚") {
         // change font size to show focus and hierachy
         equationSize = 34;
@@ -206,13 +207,28 @@ class _CalculatorPageState extends State<CalculatorPage> {
   }
 
   // scroll controller
-  late AutoScrollController controller ;
+  /*AutoScrollController controller = AutoScrollController();*/
+
+  // Sample list of items
+  final List<String> items = List.generate(50, (index) => "Item ${index + 1}");
+
+  // scroll controller
+  final ScrollController _scrollController = ScrollController();
 
   // scroll to index method
-  Future _scrollToIndex() async {
+ /* Future _scrollToIndex() async {
     await controller.scrollToIndex(1, preferPosition: AutoScrollPosition.end);
-  }
+  }*/
 
+  // scroll to start
+   void scrollToStart() {
+    _scrollController.animateTo(
+      0.0, // Scroll position at the top
+      duration: Duration(milliseconds: 500), // Animation duration
+      curve: Curves.ease, // Animation curve
+    );
+  }
+/*
   @override
   void initState() {
     super.initState();
@@ -220,7 +236,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
       // viewportBoundaryGetter: () => Rect.fromLTRB(0, 0, 0, 0),
       axis: scrollDirection,
     );
-  }
+  }*/
 
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey();
 
@@ -278,47 +294,43 @@ class _CalculatorPageState extends State<CalculatorPage> {
                       ),
                       child: ListView(
                         primary: false,
+                        controller:  _scrollController,
                         scrollDirection: scrollDirection,
                         // dragStartBehavior: DragStartBehavior.down,
-                        physics: BouncingScrollPhysics(),
+                        physics:BouncingScrollPhysics(decelerationRate: ScrollDecelerationRate.fast),
                         shrinkWrap: true,
                         reverse: true,
                         // mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          AutoScrollTag(
-                            key: ValueKey(1),
-                            controller: controller,
-                            index: 1,
-                            child: Container(
-                              alignment: Alignment.centerRight,
-                              padding: const EdgeInsets.fromLTRB(15, 15, 15, 5),
-                              child: IntrinsicWidth(
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Flexible(
-                                        flex: 1,
-                                        child: Text(
-                                          '=',
-                                          style:
-                                              TextStyle(color: Colors.white54),
-                                        )),
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
-                                    Flexible(
-                                      flex: (MediaQuery.of(context).size.width *
-                                              0.90)
-                                          .toInt(),
-                                      child: Text(result,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w300,
-                                              fontSize: resultSize,
-                                              color: resultColor)),
-                                    ),
-                                  ], //calculatorPage
-                                ),
+                          Container(
+                            alignment: Alignment.centerRight,
+                            padding: const EdgeInsets.fromLTRB(15, 15, 15, 5),
+                            child: IntrinsicWidth(
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Flexible(
+                                      flex: 1,
+                                      child: Text(
+                                        '=',
+                                        style:
+                                            TextStyle(color: Colors.white54),
+                                      )),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  Flexible(
+                                    flex: (MediaQuery.of(context).size.width *
+                                            0.90)
+                                        .toInt(),
+                                    child: Text(result,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w300,
+                                            fontSize: resultSize,
+                                            color: resultColor)),
+                                  ),
+                                ], //calculatorPage
                               ),
                             ),
                           ),
@@ -393,7 +405,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                   ),
                   Positioned(
                     bottom: MediaQuery.of(context).size.height * 0.0,
-                    left: MediaQuery.of(context).size.width * 0.81,
+                    left: MediaQuery.of(context).size.width * 0.80,
                     // left: double.minPositive,
                     right: MediaQuery.of(context).size.width * 0.025,
                     top: 5,
@@ -412,6 +424,9 @@ class _CalculatorPageState extends State<CalculatorPage> {
                               enableFeedback: true,
                               onPressed: () {
                                 setState(() {
+                                  //reset position of listview
+                                  scrollToStart();
+                                  // stores the preivious answer
                                   if (ans == '') {
                                     return;
                                   }
