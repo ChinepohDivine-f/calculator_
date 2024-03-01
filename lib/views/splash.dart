@@ -12,6 +12,8 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
+
+  
   @override
   Widget build(BuildContext context) {
     Timer(const Duration(seconds: 3), () {

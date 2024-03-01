@@ -1,6 +1,7 @@
 import 'package:calculator/components/holder.dart';
 import 'package:calculator/components/seed_color.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:calculator/components/seed_color.dart';
 import 'package:math_expressions/math_expressions.dart';
@@ -245,13 +246,16 @@ class _CalculatorPageState extends State<CalculatorPage> {
                         color: ThemeData.dark()
                             .scaffoldBackgroundColor
                             .withOpacity(0.85),
-                        borderRadius: BorderRadius.only(
+                        borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(20),
                             topRight: Radius.circular(20),
                             bottomLeft: Radius.circular(10),
                             bottomRight: Radius.circular(10)),
                       ),
                       child: ListView(
+                        primary: false,
+                        
+                        // dragStartBehavior: DragStartBehavior.down,
                         physics: BouncingScrollPhysics(),
                         shrinkWrap: true,
                         reverse: true,
