@@ -268,230 +268,228 @@ class _CalculatorPageState extends State<CalculatorPage> {
           title: _customAppBar(_globalKey)),
       // bottomSheet: BottomSheet(onClosing: (){}, builder: ),
 
-      body: SafeArea(
-        child: Column(
-          children: [
-            // App bar
-            // Padding(
-            // padding: EdgeInsets.fromLTRB(15, 15, 10, 3),
-            // child: _customAppBar(_globalKey)),
-            // cupertino
-            Expanded(
-              child: Stack(
-                children: [
-                  Container(
-                    margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
+      body: Column(
+        children: [
+          // App bar
+          // Padding(
+          // padding: EdgeInsets.fromLTRB(15, 15, 10, 3),
+          // child: _customAppBar(_globalKey)),
+          // cupertino
+          Expanded(
+            child: Stack(
+              children: [
+                Container(
+                  margin: EdgeInsets.fromLTRB(5, 0, 5, 10),
+                  decoration: BoxDecoration(
+                    color: ThemeData.dark().focusColor,
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                        bottomLeft: Radius.circular(10),
+                        bottomRight: Radius.circular(10)),
+                  ),
+                  child: Container(
+                    // padding: EdgeInsets.all(4),
+                    alignment: Alignment.bottomLeft,
+                    margin: EdgeInsets.fromLTRB(1, 0, 1, 5),
+      
                     decoration: BoxDecoration(
-                      color: ThemeData.dark().focusColor,
+                      color: ThemeData.dark()
+                          .scaffoldBackgroundColor
+                          .withOpacity(0.85),
                       borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(20),
                           topRight: Radius.circular(20),
                           bottomLeft: Radius.circular(10),
                           bottomRight: Radius.circular(10)),
                     ),
-                    child: Container(
-                      // padding: EdgeInsets.all(4),
-                      alignment: Alignment.bottomLeft,
-                      margin: EdgeInsets.fromLTRB(1, 0, 1, 5),
-
-                      decoration: BoxDecoration(
-                        color: ThemeData.dark()
-                            .scaffoldBackgroundColor
-                            .withOpacity(0.85),
-                        borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
-                            bottomLeft: Radius.circular(10),
-                            bottomRight: Radius.circular(10)),
-                      ),
-                      child: PageView(
-                        onPageChanged: (pageNumber) {
-                          setState(() {
-                            print(pageNumber);
-                            if (pageNumber == 1) {
-                              showAnswerBtn = false;
-                            } else showAnswerBtn = true;
-                          });
-                        },
-                        controller: _pageScrollController,
-                        // scrollDirection: Axis.vertical,
-                        scrollBehavior:MaterialScrollBehavior(),
-                        children: [
-                          Align(
-                              alignment: Alignment.bottomCenter,
-                              child: Padding(
-                                padding: const EdgeInsets.fromLTRB(5, 0, 10, 5),
-                                child: _ResultEquationDisplay(context),
-                              )),
-                          _historyContainer()
-                        ],
-                      ),
-                      // child: _ResultEquationDisplay(context),
+                    child: PageView(
+                      onPageChanged: (pageNumber) {
+                        setState(() {
+                          print(pageNumber);
+                          if (pageNumber == 1) {
+                            showAnswerBtn = false;
+                          } else showAnswerBtn = true;
+                        });
+                      },
+                      controller: _pageScrollController,
+                      // scrollDirection: Axis.vertical,
+                      scrollBehavior:MaterialScrollBehavior(),
+                      children: [
+                        Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(5, 0, 10, 5),
+                              child: _ResultEquationDisplay(context),
+                            )),
+                        _historyContainer()
+                      ],
                     ),
+                    // child: _ResultEquationDisplay(context),
                   ),
-                  if (showAnswerBtn) _answerButton(context)
-                ],
-              ),
+                ),
+                if (showAnswerBtn) _answerButton(context)
+              ],
             ),
-            // Expanded(
-            //         child: Divider(
-            //           thickness: 2,
-            //           indent: indent,
-            //           endIndent: indent,
-            //           color: ThemeData.dark().dividerColor,
-            //         ),
-            //       ),
-            Container(
-              alignment: Alignment.center,
-              // padding:
-              // const EdgeInsets.only(bottom: 2, top: 1, right: 1, left: 1),
-              decoration: BoxDecoration(
-                  // color: ThemeData.dark().cardColor,
-                  color: Colors.black26,
-                  // borderRadius: BorderRadius.circular(50),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(10),
-                    topRight: Radius.circular(10),
-                  )),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                      flex: 6,
-                      // width: MediaQuery.of(context).size.width * 0.75,
-                      child: Table(
-                        children: [
-                          TableRow(children: [
-                            CustomBtn(
-                              buttonColor: Colors.red.withBlue(15),
-                              buttonHeight: 1,
-                              buttonText: 'C',
-                            ),
-                            CustomBtn(
-                              buttonColor: seed,
-                              buttonHeight: 1,
-                              buttonText: '÷',
-                            ),
-                            CustomBtn(
-                              buttonColor: seed,
-                              buttonHeight: 1,
-                              buttonText: 'x',
-                            ),
-                          ]),
-                          TableRow(children: [
-                            CustomBtn(
+          ),
+          // Expanded(
+          //         child: Divider(
+          //           thickness: 2,
+          //           indent: indent,
+          //           endIndent: indent,
+          //           color: ThemeData.dark().dividerColor,
+          //         ),
+          //       ),
+          Container(
+            alignment: Alignment.center,
+            // padding:
+            // const EdgeInsets.only(bottom: 2, top: 1, right: 1, left: 1),
+            decoration: BoxDecoration(
+                // color: ThemeData.dark().cardColor,
+                color: Colors.black26,
+                // borderRadius: BorderRadius.circular(50),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10),
+                  topRight: Radius.circular(10),
+                )),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                    flex: 6,
+                    // width: MediaQuery.of(context).size.width * 0.75,
+                    child: Table(
+                      children: [
+                        TableRow(children: [
+                          CustomBtn(
+                            buttonColor: Colors.red.withBlue(15),
+                            buttonHeight: 1,
+                            buttonText: 'C',
+                          ),
+                          CustomBtn(
+                            buttonColor: seed,
+                            buttonHeight: 1,
+                            buttonText: '÷',
+                          ),
+                          CustomBtn(
+                            buttonColor: seed,
+                            buttonHeight: 1,
+                            buttonText: 'x',
+                          ),
+                        ]),
+                        TableRow(children: [
+                          CustomBtn(
+                            buttonColor: Colors.white,
+                            buttonHeight: 1,
+                            buttonText: '7',
+                          ),
+                          CustomBtn(
+                            buttonColor: Colors.white,
+                            buttonHeight: 1,
+                            buttonText: '8',
+                          ),
+                          CustomBtn(
+                            buttonColor: Colors.white,
+                            buttonHeight: 1,
+                            buttonText: '9',
+                          ),
+                        ]),
+                        TableRow(children: [
+                          CustomBtn(
+                            buttonColor: Colors.white,
+                            buttonHeight: 1,
+                            buttonText: '4',
+                          ),
+                          CustomBtn(
+                            buttonColor: Colors.white,
+                            buttonHeight: 1,
+                            buttonText: '5',
+                          ),
+                          CustomBtn(
+                            buttonColor: Colors.white,
+                            buttonHeight: 1,
+                            buttonText: '6',
+                          ),
+                        ]),
+                        TableRow(children: [
+                          CustomBtn(
+                            buttonColor: Colors.white,
+                            buttonHeight: 1,
+                            buttonText: '1',
+                          ),
+                          CustomBtn(
+                            buttonColor: Colors.white,
+                            buttonHeight: 1,
+                            buttonText: '2',
+                          ),
+                          CustomBtn(
+                            buttonColor: Colors.white,
+                            buttonHeight: 1,
+                            buttonText: '3',
+                          ),
+                        ]),
+                        TableRow(children: [
+                          CustomBtn(
+                            buttonColor: Colors.white,
+                            buttonHeight: 1,
+                            buttonText: '%',
+                          ),
+                          CustomBtn(
+                            buttonColor: Colors.white,
+                            buttonHeight: 1,
+                            buttonText: '0',
+                          ),
+                          CustomBtn(
+                            buttonColor: Colors.white,
+                            buttonHeight: 1,
+                            buttonText: '.',
+                          ),
+                        ]),
+                      ],
+                    )),
+                Expanded(
+                    flex: 2,
+                    // width: MediaQuery.of(context).size.width * 0.30,
+                    child: Table(
+                      children: [
+                        TableRow(children: [
+                          CustomBtn(
+                            buttonColor: seed,
+                            buttonHeight: 1,
+                            buttonText: '␡',
+                          ),
+                        ]),
+                        TableRow(children: [
+                          CustomBtn(
+                            buttonColor: seed,
+                            buttonHeight: 1,
+                            buttonText: '-',
+                          ),
+                        ]),
+                        TableRow(children: [
+                          CustomBtn(
+                            buttonColor: seed,
+                            buttonHeight: 1,
+                            buttonText: '+',
+                          ),
+                        ]),
+                        TableRow(children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8),
+                            child: CustomBtn(
+                              buttonColor2: Color.fromARGB(255, 78, 212, 83),
                               buttonColor: Colors.white,
-                              buttonHeight: 1,
-                              buttonText: '7',
+                              buttonHeight: 2,
+                              buttonText: '＝',
                             ),
-                            CustomBtn(
-                              buttonColor: Colors.white,
-                              buttonHeight: 1,
-                              buttonText: '8',
-                            ),
-                            CustomBtn(
-                              buttonColor: Colors.white,
-                              buttonHeight: 1,
-                              buttonText: '9',
-                            ),
-                          ]),
-                          TableRow(children: [
-                            CustomBtn(
-                              buttonColor: Colors.white,
-                              buttonHeight: 1,
-                              buttonText: '4',
-                            ),
-                            CustomBtn(
-                              buttonColor: Colors.white,
-                              buttonHeight: 1,
-                              buttonText: '5',
-                            ),
-                            CustomBtn(
-                              buttonColor: Colors.white,
-                              buttonHeight: 1,
-                              buttonText: '6',
-                            ),
-                          ]),
-                          TableRow(children: [
-                            CustomBtn(
-                              buttonColor: Colors.white,
-                              buttonHeight: 1,
-                              buttonText: '1',
-                            ),
-                            CustomBtn(
-                              buttonColor: Colors.white,
-                              buttonHeight: 1,
-                              buttonText: '2',
-                            ),
-                            CustomBtn(
-                              buttonColor: Colors.white,
-                              buttonHeight: 1,
-                              buttonText: '3',
-                            ),
-                          ]),
-                          TableRow(children: [
-                            CustomBtn(
-                              buttonColor: Colors.white,
-                              buttonHeight: 1,
-                              buttonText: '%',
-                            ),
-                            CustomBtn(
-                              buttonColor: Colors.white,
-                              buttonHeight: 1,
-                              buttonText: '0',
-                            ),
-                            CustomBtn(
-                              buttonColor: Colors.white,
-                              buttonHeight: 1,
-                              buttonText: '.',
-                            ),
-                          ]),
-                        ],
-                      )),
-                  Expanded(
-                      flex: 2,
-                      // width: MediaQuery.of(context).size.width * 0.30,
-                      child: Table(
-                        children: [
-                          TableRow(children: [
-                            CustomBtn(
-                              buttonColor: seed,
-                              buttonHeight: 1,
-                              buttonText: '␡',
-                            ),
-                          ]),
-                          TableRow(children: [
-                            CustomBtn(
-                              buttonColor: seed,
-                              buttonHeight: 1,
-                              buttonText: '-',
-                            ),
-                          ]),
-                          TableRow(children: [
-                            CustomBtn(
-                              buttonColor: seed,
-                              buttonHeight: 1,
-                              buttonText: '+',
-                            ),
-                          ]),
-                          TableRow(children: [
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 8),
-                              child: CustomBtn(
-                                buttonColor2: Color.fromARGB(255, 78, 212, 83),
-                                buttonColor: Colors.white,
-                                buttonHeight: 2,
-                                buttonText: '＝',
-                              ),
-                            )
-                          ]),
-                        ],
-                      )),
-                ],
-              ),
-            )
-          ],
-        ),
+                          )
+                        ]),
+                      ],
+                    )),
+              ],
+            ),
+          )
+        ],
       ),
       drawer: Drawer(
         key: _globalKey,
