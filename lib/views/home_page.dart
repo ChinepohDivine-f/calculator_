@@ -22,13 +22,13 @@ class _CalculatorPageState extends State<CalculatorPage> {
   String equation = "0";
   String result = "";
   String expression = "";
-  double equationSize = 34;
+  double equationSize = 52.2;
   double resultSize = 20;
   Color resultColor = Colors.white;
   Color expressionColor = Colors.white70;
   String ans = "";
   bool _isDarkMode = true;
-  bool showCursor = true;
+  bool isReverse = true;
   bool isEnabled = false;
 
   void _toggleTheme(bool newValue) {
@@ -66,13 +66,14 @@ class _CalculatorPageState extends State<CalculatorPage> {
   }
 
   buttonPressed(String buttonText) {
+    isReverse = true;
     setState(() {
       //reset scroll position
       scrollToStart();
       // this sections determines what happens when a button is pressed
       if (buttonText == "C") {
         // change font size to show focus and hierachy
-        equationSize = 34;
+        equationSize = 52.2;
         resultSize = 20;
         // swapp color to show where the focus is at
         expressionColor = Colors.white;
@@ -85,7 +86,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
       } else if (buttonText == "␡") {
         try {
           // change font size to show focus and hierachy
-          equationSize = 34;
+          equationSize = 52.2;
           resultSize = 20;
           // swapp color to show where the focus is at
           expressionColor = Colors.white;
@@ -119,8 +120,9 @@ class _CalculatorPageState extends State<CalculatorPage> {
           equation = "0";
         }
       } else if (buttonText == "＝") {
+        isReverse = false;
         equationSize = 20;
-        resultSize = 34;
+        resultSize = 52.2;
         print(expression);
         // swapp color to show where the focus is at
         resultColor = Colors.white;
@@ -147,7 +149,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
         }
       } else {
         // change font size to show focus and hierachy
-        equationSize = 34;
+        equationSize = 52.2;
         resultSize = 20;
         // swapp color to show where the focus is at
         expressionColor = Colors.white;
@@ -257,6 +259,8 @@ class _CalculatorPageState extends State<CalculatorPage> {
           automaticallyImplyLeading: false,
           backgroundColor: ThemeData.dark().scaffoldBackgroundColor,
           title: _customAppBar(_globalKey)),
+      // bottomSheet: BottomSheet(onClosing: (){}, builder: ),
+
       body: SafeArea(
         child: Column(
           children: [
@@ -301,12 +305,14 @@ class _CalculatorPageState extends State<CalculatorPage> {
                         physics: BouncingScrollPhysics(
                             decelerationRate: ScrollDecelerationRate.fast),
                         shrinkWrap: true,
-                        reverse: true,
+                        reverse: isReverse,
                         // mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Container(
+                          
+                          
+                          isReverse ? Container(
                             alignment: Alignment.centerRight,
-                            padding: const EdgeInsets.fromLTRB(15, 40, 15, 5),
+                            padding: const EdgeInsets.fromLTRB(15, 20, 15, 5),
                             child: IntrinsicWidth(
                               child: Row(
                                 mainAxisAlignment:
@@ -334,7 +340,13 @@ class _CalculatorPageState extends State<CalculatorPage> {
                                 ], //calculatorPage
                               ),
                             ),
-                          ),
+                          ) : Text(result,
+                          textAlign: TextAlign.end,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: resultSize,
+                                            color: resultColor)),
+
                           // SizedBox(height: 15,),
                           // LinearProgressIndicator(minHeight: 0.025,),
 
@@ -345,96 +357,56 @@ class _CalculatorPageState extends State<CalculatorPage> {
                                 MediaQuery.of(context).size.height * 0.03,
                                 15,
                                 5),
-                            // child: TypeThis(
-                            //     string: equation,
-                            //     speed: 5,
-                            //     style: TextStyle(
-                            //         color: expressionColor,
-                            //         fontSize: equationSize,
-                            //         fontWeight: FontWeight.w400)),
-                            // child: TextField(
-                            //   cursorColor: Colors.blue,
-                            //   cursorHeight: 40,
-                            //   showCursor: showCursor,
-                            //   cursorRadius: Radius.circular(10),
-                            //   cursorOpacityAnimates: true,
-                            //   textAlign: TextAlign.end,
-                            //   textAlignVertical: TextAlignVertical.bottom,
-                            //   // readOnly: true,
-                            //   enabled: isEnabled,
-                            //   focusNode: FocusNode(),
-                            //   decoration: InputDecoration(
-                            //     border: InputBorder.none,
-                            //     hintText: equation,
-                            //     hintStyle: TextStyle(
-                            //         fontWeight: FontWeight.w400,
-                            //         fontSize: equationSize,
-                            //         color: expressionColor),
-                            //   ),
-                            // ),
                             child: Text(equation,
                                 style: TextStyle(
                                     fontWeight: FontWeight.w400,
                                     fontSize: equationSize,
                                     color: expressionColor)),
                           ),
-                          const Row(
-                            children: [
-                              Expanded(
-                                  flex: 1,
-                                  child: Divider(
-                                    thickness: 0.3,
-                                  )),
-                              Text(
-                                'History ⇧',
-                                style: TextStyle(
-                                    color: Colors.white60, fontSize: 14),
-                              ),
-                              Expanded(
-                                  flex: 15,
-                                  child: Divider(
-                                    thickness: 0.3,
-                                  )),
-                            ],
-                          ),
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-
-                            // Display the map contents
-                            child: isEmpty()
-                                ? Text('No entries yet...',
-                                    style: TextStyle(color: Colors.white))
-                                : ListView.builder(
-                                    physics: NeverScrollableScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemCount: history.length,
-                                    itemBuilder: (context, index) {
-                                      String equation =
-                                          history.keys.elementAt(index);
-                                      String result =
-                                          history.values.elementAt(index);
-                                      return ListTile(
-                                        title: Text(
-                                          equation,
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.white),
-                                        ),
-                                        subtitle: Text(
-                                          '\t= ' + result,
-                                          style: TextStyle(
-                                              fontSize: 24,
-                                              fontWeight: FontWeight.w300,
-                                              color: Colors.white54),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                          ),
+                                               // _historyContainer(),
                         ],
                       ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: MediaQuery.of(context).size.height * 0.0,
+                    right: MediaQuery.of(context).size.width * 0.80,
+                    // left: double.minPositive,
+                    left: MediaQuery.of(context).size.width * 0.025,
+                    top: 5,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        SizedBox(
+                          height: 50,
+                          width: 50,
+                          child: FloatingActionButton.extended(
+                              // label: Text('previous save'),
+                              shape: CircleBorder(),
+                              backgroundColor:
+                                  ThemeData.dark().focusColor.withOpacity(0.1),
+                              enableFeedback: true,
+                              onPressed: () {
+                                setState(() {
+                                  //reset position of listview
+                                  scrollToStart();
+                                  // stores the preivious answer
+                                  if (ans == '') {
+                                    return;
+                                  }
+                                  expression = expression + ans;
+                                  String temp = expression;
+                                  equation = temp;
+                                });
+                              },
+                              label: Icon(
+                                Icons.history,
+                                color: Colors.white.withOpacity(0.9),
+                                weight: 0.025,
+                              )),
+                        ),
+                      ],
                     ),
                   ),
                   Positioned(
@@ -458,6 +430,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                               enableFeedback: true,
                               onPressed: () {
                                 setState(() {
+                                  isReverse = true;
                                   //reset position of listview
                                   scrollToStart();
                                   // stores the preivious answer
@@ -674,11 +647,48 @@ class _CalculatorPageState extends State<CalculatorPage> {
     );
   }
 
+  Container _historyContainer() {
+    return Container(
+      alignment: Alignment.centerLeft,
+      padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+
+      // Display the map contents
+      child: isEmpty()
+          ? Text('No entries yet...', style: TextStyle(color: Colors.white))
+          : ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: history.length,
+              itemBuilder: (context, index) {
+                String equation = history.keys.elementAt(index);
+                String result = history.values.elementAt(index);
+                return ListTile(
+                  title: Text(
+                    equation,
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white),
+                  ),
+                  subtitle: Text(
+                    '\t= ' + result,
+                    style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w300,
+                        color: Colors.white54),
+                  ),
+                );
+              },
+            ),
+    );
+  }
+
   Row _customAppBar(_globalKey) {
     return const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       // IconButton(onPressed: () {print('dont touch me sir...');}, icon: Icon(Icons.menu_rounded, color: Colors.white),),
-       TypeThis(string: 'C  A  L  C  U  L  A  T  O  R',
-       speed: 30,
+      TypeThis(
+          string: 'C  A  L  C  U  L  A  T  O  R',
+          speed: 30,
           style: TextStyle(
               fontFamily: String.fromEnvironment("poppins"),
               fontWeight: FontWeight.bold,

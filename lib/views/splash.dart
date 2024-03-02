@@ -16,7 +16,7 @@ class _SplashPageState extends State<SplashPage> {
   
   @override
   Widget build(BuildContext context) {
-    Timer(const Duration(seconds: 3), () {
+    Timer(const Duration(milliseconds: 1500), () {
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) => const CalculatorPage()));
     });
