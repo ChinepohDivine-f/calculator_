@@ -58,12 +58,10 @@ class _CalculatorPageState extends State<CalculatorPage> {
       Expression exp = Parser().parse(expression); // Use Parser().parse
       String result = exp.evaluate(EvaluationType.REAL, context).toString();
       // return result.toString();
-  // Check for trailing ".0" and trim if necessary
-  return result = result.endsWith(".0") ? 
-                       result.substring(0, result.length - 2) : 
-                       result;
-
-
+      // Check for trailing ".0" and trim if necessary
+      return result = result.endsWith(".0")
+          ? result.substring(0, result.length - 2)
+          : result;
     } catch (e) {
       return 'Error';
     }
@@ -71,6 +69,12 @@ class _CalculatorPageState extends State<CalculatorPage> {
 
   buttonPressed(String buttonText) {
     isReverse = true;
+    // reduce the length of text when it passes a certain limit
+    int size1 = (MediaQuery.of(context).size.width / 37.5).toInt();
+    int size2 = (MediaQuery.of(context).size.width / 37.5 + size1*0.61).toInt();
+    int size3 = (MediaQuery.of(context).size.width / 37.5 + size1*1.61).toInt();
+     int size4 = (MediaQuery.of(context).size.width / 37.5 + size1*2.61).toInt();
+print("$size1, $size2 $size3 $size4");
     setState(() {
       //reset scroll position
       // scrollToStart();
@@ -89,9 +93,15 @@ class _CalculatorPageState extends State<CalculatorPage> {
         equation = "0";
         print("clear screen");
       } else if (buttonText == "␡") {
+        isReverse = true;
         try {
           // change font size to show focus and hierachy
           equationSize = 52.2;
+          if (expression.length >= size1) equationSize = 52.2;
+        if (expression.length >= size2) equationSize = 36;
+        if (expression.length >= size3) equationSize = 30;
+        if (expression.length >= size4) equationSize = 28;
+
           resultSize = 20;
           // swapp color to show where the focus is at
           expressionColor = Colors.white;
@@ -125,9 +135,16 @@ class _CalculatorPageState extends State<CalculatorPage> {
           equation = "0";
         }
       } else if (buttonText == "＝") {
+        // reset size of the result text
+        resultSize = 52.2;
+       if (result.length >= size1) resultSize = 48;
+        if (result.length >= size2) resultSize = 36;
+        if (result.length >= size3) resultSize = 30;
+        if (result.length >= size4) resultSize = 28;
+
         isReverse = false;
         equationSize = 20;
-        resultSize = 52.2;
+        // resultSize = 52.2;
         print(expression);
         // swapp color to show where the focus is at
         resultColor = Colors.white;
@@ -155,6 +172,13 @@ class _CalculatorPageState extends State<CalculatorPage> {
       } else {
         // change font size to show focus and hierachy
         equationSize = 52.2;
+        if (expression.length >= size1) equationSize = 48;
+        if (expression.length >= size2) equationSize = 36;
+        if (expression.length >= size3) equationSize = 30;
+        if (expression.length >= size4) equationSize = 28;
+
+        // equationSize = 52.2;
+
         resultSize = 20;
         // swapp color to show where the focus is at
         expressionColor = Colors.white;
@@ -240,8 +264,9 @@ class _CalculatorPageState extends State<CalculatorPage> {
   }
 
   void scrollToPage1() {
-    _pageScrollController.animateTo(0.0,// scroll to top of page
-        duration: Duration(milliseconds: 100), curve: Curves.bounceIn);
+    _pageScrollController.animateTo(0.0, // scroll to top page
+        duration: Duration(milliseconds: 100),
+        curve: Curves.bounceIn);
   }
 /*
   @override
@@ -297,7 +322,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                     // padding: EdgeInsets.all(4),
                     alignment: Alignment.bottomLeft,
                     margin: EdgeInsets.fromLTRB(1, 0, 1, 5),
-      
+
                     decoration: BoxDecoration(
                       color: ThemeData.dark()
                           .scaffoldBackgroundColor
@@ -315,12 +340,13 @@ class _CalculatorPageState extends State<CalculatorPage> {
                           if (pageNumber == 1) {
                             showAnswerBtn = false;
                             scrollToStart();
-                          } else showAnswerBtn = true;
+                          } else
+                            showAnswerBtn = true;
                         });
                       },
                       controller: _pageScrollController,
                       // scrollDirection: Axis.vertical,
-                      scrollBehavior:MaterialScrollBehavior(),
+                      scrollBehavior: MaterialScrollBehavior(),
                       children: [
                         Align(
                             alignment: Alignment.bottomCenter,
@@ -367,10 +393,14 @@ class _CalculatorPageState extends State<CalculatorPage> {
                     child: Table(
                       children: [
                         TableRow(children: [
-                          CustomBtn(
-                            buttonColor: Colors.red.withBlue(15),
-                            buttonHeight: 1,
-                            buttonText: 'C',
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(5, 0, 2, 0),
+                            child: CustomBtn(
+                              buttonColor: Colors.white,
+                              buttonColor2: Colors.blue.withOpacity(0.4),
+                              buttonHeight: 1,
+                              buttonText: 'C',
+                            ),
                           ),
                           CustomBtn(
                             buttonColor: seed,
@@ -595,7 +625,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
       children: [
         isReverse
             ? Container(
-              // height: 150,
+                // height: 150,
                 alignment: Alignment.centerRight,
                 padding: const EdgeInsets.fromLTRB(15, 20, 15, 5),
                 child: IntrinsicWidth(
@@ -625,7 +655,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                 ),
               )
             : AutoSizeText(result,
-            minFontSize: 38,
+                minFontSize: 38,
                 textAlign: TextAlign.end,
                 style: TextStyle(
                     fontWeight: FontWeight.w500,
