@@ -7,6 +7,7 @@ import 'package:calculator/components/seed_color.dart';
 import 'package:flutter/rendering.dart';
 import 'package:math_expressions/math_expressions.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:typethis/typethis.dart';
 
 class CalculatorPage extends StatefulWidget {
   const CalculatorPage({super.key});
@@ -26,8 +27,9 @@ class _CalculatorPageState extends State<CalculatorPage> {
   Color resultColor = Colors.white;
   Color expressionColor = Colors.white70;
   String ans = "";
-
   bool _isDarkMode = true;
+  bool showCursor = true;
+  bool isEnabled = false;
 
   void _toggleTheme(bool newValue) {
     setState(() {
@@ -65,10 +67,10 @@ class _CalculatorPageState extends State<CalculatorPage> {
 
   buttonPressed(String buttonText) {
     setState(() {
-      //reset scroll position 
+      //reset scroll position
       scrollToStart();
       // this sections determines what happens when a button is pressed
-      if (buttonText == "⎚") {
+      if (buttonText == "C") {
         // change font size to show focus and hierachy
         equationSize = 34;
         resultSize = 20;
@@ -144,7 +146,6 @@ class _CalculatorPageState extends State<CalculatorPage> {
           print(result);
         }
       } else {
-        
         // change font size to show focus and hierachy
         equationSize = 34;
         resultSize = 20;
@@ -197,8 +198,8 @@ class _CalculatorPageState extends State<CalculatorPage> {
           ),
           child: Text(buttonText,
               style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.w300,
+                fontSize: 32,
+                fontWeight: FontWeight.w400,
                 color: isTapped
                     ? ThemeData.dark().canvasColor.withOpacity(0.8)
                     : buttonColor,
@@ -216,15 +217,15 @@ class _CalculatorPageState extends State<CalculatorPage> {
   final ScrollController _scrollController = ScrollController();
 
   // scroll to index method
- /* Future _scrollToIndex() async {
+  /* Future _scrollToIndex() async {
     await controller.scrollToIndex(1, preferPosition: AutoScrollPosition.end);
   }*/
 
   // scroll to start
-   void scrollToStart() {
+  void scrollToStart() {
     _scrollController.animateTo(
       0.0, // Scroll position at the top
-      duration: Duration(milliseconds: 500), // Animation duration
+      duration: Duration(milliseconds: 300), // Animation duration
       curve: Curves.ease, // Animation curve
     );
   }
@@ -294,17 +295,18 @@ class _CalculatorPageState extends State<CalculatorPage> {
                       ),
                       child: ListView(
                         primary: false,
-                        controller:  _scrollController,
+                        controller: _scrollController,
                         scrollDirection: scrollDirection,
                         // dragStartBehavior: DragStartBehavior.down,
-                        physics:BouncingScrollPhysics(decelerationRate: ScrollDecelerationRate.fast),
+                        physics: BouncingScrollPhysics(
+                            decelerationRate: ScrollDecelerationRate.fast),
                         shrinkWrap: true,
                         reverse: true,
                         // mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Container(
                             alignment: Alignment.centerRight,
-                            padding: const EdgeInsets.fromLTRB(15, 15, 15, 5),
+                            padding: const EdgeInsets.fromLTRB(15, 40, 15, 5),
                             child: IntrinsicWidth(
                               child: Row(
                                 mainAxisAlignment:
@@ -314,8 +316,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                                       flex: 1,
                                       child: Text(
                                         '=',
-                                        style:
-                                            TextStyle(color: Colors.white54),
+                                        style: TextStyle(color: Colors.white54),
                                       )),
                                   const SizedBox(
                                     width: 5,
@@ -326,7 +327,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                                         .toInt(),
                                     child: Text(result,
                                         style: TextStyle(
-                                            fontWeight: FontWeight.w300,
+                                            fontWeight: FontWeight.w500,
                                             fontSize: resultSize,
                                             color: resultColor)),
                                   ),
@@ -335,12 +336,45 @@ class _CalculatorPageState extends State<CalculatorPage> {
                             ),
                           ),
                           // SizedBox(height: 15,),
+                          // LinearProgressIndicator(minHeight: 0.025,),
+
                           Container(
                             alignment: Alignment.centerRight,
-                            padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+                            padding: EdgeInsets.fromLTRB(
+                                15,
+                                MediaQuery.of(context).size.height * 0.03,
+                                15,
+                                5),
+                            // child: TypeThis(
+                            //     string: equation,
+                            //     speed: 5,
+                            //     style: TextStyle(
+                            //         color: expressionColor,
+                            //         fontSize: equationSize,
+                            //         fontWeight: FontWeight.w400)),
+                            // child: TextField(
+                            //   cursorColor: Colors.blue,
+                            //   cursorHeight: 40,
+                            //   showCursor: showCursor,
+                            //   cursorRadius: Radius.circular(10),
+                            //   cursorOpacityAnimates: true,
+                            //   textAlign: TextAlign.end,
+                            //   textAlignVertical: TextAlignVertical.bottom,
+                            //   // readOnly: true,
+                            //   enabled: isEnabled,
+                            //   focusNode: FocusNode(),
+                            //   decoration: InputDecoration(
+                            //     border: InputBorder.none,
+                            //     hintText: equation,
+                            //     hintStyle: TextStyle(
+                            //         fontWeight: FontWeight.w400,
+                            //         fontSize: equationSize,
+                            //         color: expressionColor),
+                            //   ),
+                            // ),
                             child: Text(equation,
                                 style: TextStyle(
-                                    fontWeight: FontWeight.w300,
+                                    fontWeight: FontWeight.w400,
                                     fontSize: equationSize,
                                     color: expressionColor)),
                           ),
@@ -385,14 +419,14 @@ class _CalculatorPageState extends State<CalculatorPage> {
                                           equation,
                                           style: TextStyle(
                                               fontSize: 18,
-                                              fontWeight: FontWeight.w300,
+                                              fontWeight: FontWeight.w400,
                                               color: Colors.white),
                                         ),
                                         subtitle: Text(
                                           '\t= ' + result,
                                           style: TextStyle(
                                               fontSize: 24,
-                                              fontWeight: FontWeight.w200,
+                                              fontWeight: FontWeight.w300,
                                               color: Colors.white54),
                                         ),
                                       );
@@ -440,7 +474,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                                 style: TextStyle(
                                     fontSize: 14,
                                     color: Colors.white.withOpacity(0.9),
-                                    fontWeight: FontWeight.w300),
+                                    fontWeight: FontWeight.w400),
                               )),
                         ),
                       ],
@@ -481,7 +515,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                             CustomBtn(
                               buttonColor: Colors.red.withBlue(15),
                               buttonHeight: 1,
-                              buttonText: '⎚',
+                              buttonText: 'C',
                             ),
                             CustomBtn(
                               buttonColor: seed,
@@ -641,9 +675,10 @@ class _CalculatorPageState extends State<CalculatorPage> {
   }
 
   Row _customAppBar(_globalKey) {
-    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+    return const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       // IconButton(onPressed: () {print('dont touch me sir...');}, icon: Icon(Icons.menu_rounded, color: Colors.white),),
-      const Text('C  A  L  C  U  L  A  T  O  R',
+       TypeThis(string: 'C  A  L  C  U  L  A  T  O  R',
+       speed: 30,
           style: TextStyle(
               fontFamily: String.fromEnvironment("poppins"),
               fontWeight: FontWeight.bold,

@@ -38,7 +38,7 @@ class _SplashPageState extends State<SplashPage> {
       });
     });
     return Scaffold(
-        backgroundColor: color2,
+        backgroundColor: ThemeData.dark().scaffoldBackgroundColor,
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
