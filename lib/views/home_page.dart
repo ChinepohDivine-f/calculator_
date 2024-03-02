@@ -8,6 +8,7 @@ import 'package:flutter/rendering.dart';
 import 'package:math_expressions/math_expressions.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:typethis/typethis.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class CalculatorPage extends StatefulWidget {
   const CalculatorPage({super.key});
@@ -55,11 +56,14 @@ class _CalculatorPageState extends State<CalculatorPage> {
     try {
       ContextModel context = ContextModel();
       Expression exp = Parser().parse(expression); // Use Parser().parse
-      double result = exp.evaluate(EvaluationType.REAL, context);
-      return result.toString();
-      // } on EvalException catch (e) {
-      //   // Handle the error gracefully
-      //   return 0.00;
+      String result = exp.evaluate(EvaluationType.REAL, context).toString();
+      // return result.toString();
+  // Check for trailing ".0" and trim if necessary
+  return result = result.endsWith(".0") ? 
+                       result.substring(0, result.length - 2) : 
+                       result;
+
+
     } catch (e) {
       return 'Error';
     }
@@ -69,7 +73,8 @@ class _CalculatorPageState extends State<CalculatorPage> {
     isReverse = true;
     setState(() {
       //reset scroll position
-      scrollToStart();
+      // scrollToStart();
+      scrollToPage1();
       // this sections determines what happens when a button is pressed
       if (buttonText == "C") {
         // change font size to show focus and hierachy
@@ -228,14 +233,14 @@ class _CalculatorPageState extends State<CalculatorPage> {
   // scroll to start
   void scrollToStart() {
     _scrollController.animateTo(
-      0.0, // Scroll position at the top
+      _scrollController.position.maxScrollExtent, // Scroll position at the end
       duration: Duration(milliseconds: 100), // Animation duration
       curve: Curves.ease, // Animation curve
     );
   }
 
   void scrollToPage1() {
-    _pageScrollController.animateTo(0.0,
+    _pageScrollController.animateTo(0.0,// scroll to top of page
         duration: Duration(milliseconds: 100), curve: Curves.bounceIn);
   }
 /*
@@ -309,6 +314,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                           print(pageNumber);
                           if (pageNumber == 1) {
                             showAnswerBtn = false;
+                            scrollToStart();
                           } else showAnswerBtn = true;
                         });
                       },
@@ -344,7 +350,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
             alignment: Alignment.center,
             // padding:
             // const EdgeInsets.only(bottom: 2, top: 1, right: 1, left: 1),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
                 // color: ThemeData.dark().cardColor,
                 color: Colors.black26,
                 // borderRadius: BorderRadius.circular(50),
@@ -525,10 +531,10 @@ class _CalculatorPageState extends State<CalculatorPage> {
   Positioned _answerButton(BuildContext context) {
     return Positioned(
       bottom: MediaQuery.of(context).size.height * 0.0,
-      left: MediaQuery.of(context).size.width * 0.80,
+      right: MediaQuery.of(context).size.width * 0.80,
       // left: double.minPositive,
-      right: MediaQuery.of(context).size.width * 0.025,
-      top: 5,
+      left: MediaQuery.of(context).size.width * 0.025,
+      top: MediaQuery.of(context).size.width * 0.05,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.end,
@@ -551,7 +557,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
                     expressionColor = Colors.white;
                     resultColor = Colors.white70;
                     //reset position of listview
-                    scrollToStart();
+                    // scrollToStart();
                     scrollToPage1();
                     // stores the preivious answer
                     if (ans == '') {
@@ -578,7 +584,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
   ListView _ResultEquationDisplay(BuildContext context) {
     return ListView(
       primary: false,
-      controller: _scrollController,
+      // controller: _scrollController,
       scrollDirection: scrollDirection,
       dragStartBehavior: DragStartBehavior.down,
       physics:
@@ -589,6 +595,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
       children: [
         isReverse
             ? Container(
+              // height: 150,
                 alignment: Alignment.centerRight,
                 padding: const EdgeInsets.fromLTRB(15, 20, 15, 5),
                 child: IntrinsicWidth(
@@ -617,7 +624,8 @@ class _CalculatorPageState extends State<CalculatorPage> {
                   ),
                 ),
               )
-            : Text(result,
+            : AutoSizeText(result,
+            minFontSize: 38,
                 textAlign: TextAlign.end,
                 style: TextStyle(
                     fontWeight: FontWeight.w500,
@@ -628,6 +636,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
         // LinearProgressIndicator(minHeight: 0.025,),
 
         Container(
+          // height: 10,
           alignment: Alignment.centerRight,
           padding: EdgeInsets.fromLTRB(
               15, MediaQuery.of(context).size.height * 0.03, 15, 5),
@@ -653,6 +662,8 @@ class _CalculatorPageState extends State<CalculatorPage> {
           : ListView.builder(
               physics: AlwaysScrollableScrollPhysics(),
               shrinkWrap: true,
+              // reverse: true,
+              controller: _scrollController,
               itemCount: history.length,
               itemBuilder: (context, index) {
                 String equation = history.keys.elementAt(index);
