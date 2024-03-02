@@ -29,7 +29,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
   String ans = "";
   bool _isDarkMode = true;
   bool isReverse = true;
-  bool isEnabled = false;
+  bool showAnswerBtn = true;
 
   void _toggleTheme(bool newValue) {
     setState(() {
@@ -217,6 +217,8 @@ class _CalculatorPageState extends State<CalculatorPage> {
 
   // scroll controller
   final ScrollController _scrollController = ScrollController();
+  final PageAutoScrollController _pageScrollController =
+      PageAutoScrollController();
 
   // scroll to index method
   /* Future _scrollToIndex() async {
@@ -227,9 +229,14 @@ class _CalculatorPageState extends State<CalculatorPage> {
   void scrollToStart() {
     _scrollController.animateTo(
       0.0, // Scroll position at the top
-      duration: Duration(milliseconds: 300), // Animation duration
+      duration: Duration(milliseconds: 100), // Animation duration
       curve: Curves.ease, // Animation curve
     );
+  }
+
+  void scrollToPage1() {
+    _pageScrollController.animateTo(0.0,
+        duration: Duration(milliseconds: 100), curve: Curves.bounceIn);
   }
 /*
   @override
@@ -297,162 +304,32 @@ class _CalculatorPageState extends State<CalculatorPage> {
                             bottomLeft: Radius.circular(10),
                             bottomRight: Radius.circular(10)),
                       ),
-                      child: ListView(
-                        primary: false,
-                        controller: _scrollController,
-                        scrollDirection: scrollDirection,
-                        // dragStartBehavior: DragStartBehavior.down,
-                        physics: BouncingScrollPhysics(
-                            decelerationRate: ScrollDecelerationRate.fast),
-                        shrinkWrap: true,
-                        reverse: isReverse,
-                        // mainAxisAlignment: MainAxisAlignment.end,
+                      child: PageView(
+                        onPageChanged: (pageNumber) {
+                          setState(() {
+                            print(pageNumber);
+                            if (pageNumber == 1) {
+                              showAnswerBtn = false;
+                            } else showAnswerBtn = true;
+                          });
+                        },
+                        controller: _pageScrollController,
+                        // scrollDirection: Axis.vertical,
+                        scrollBehavior:MaterialScrollBehavior(),
                         children: [
-                          
-                          
-                          isReverse ? Container(
-                            alignment: Alignment.centerRight,
-                            padding: const EdgeInsets.fromLTRB(15, 20, 15, 5),
-                            child: IntrinsicWidth(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Flexible(
-                                      flex: 1,
-                                      child: Text(
-                                        '=',
-                                        style: TextStyle(color: Colors.white54),
-                                      )),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  Flexible(
-                                    flex: (MediaQuery.of(context).size.width *
-                                            0.90)
-                                        .toInt(),
-                                    child: Text(result,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: resultSize,
-                                            color: resultColor)),
-                                  ),
-                                ], //calculatorPage
-                              ),
-                            ),
-                          ) : Text(result,
-                          textAlign: TextAlign.end,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: resultSize,
-                                            color: resultColor)),
-
-                          // SizedBox(height: 15,),
-                          // LinearProgressIndicator(minHeight: 0.025,),
-
-                          Container(
-                            alignment: Alignment.centerRight,
-                            padding: EdgeInsets.fromLTRB(
-                                15,
-                                MediaQuery.of(context).size.height * 0.03,
-                                15,
-                                5),
-                            child: Text(equation,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: equationSize,
-                                    color: expressionColor)),
-                          ),
-                                               // _historyContainer(),
+                          Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(5, 0, 10, 5),
+                                child: _ResultEquationDisplay(context),
+                              )),
+                          _historyContainer()
                         ],
                       ),
+                      // child: _ResultEquationDisplay(context),
                     ),
                   ),
-                  Positioned(
-                    bottom: MediaQuery.of(context).size.height * 0.0,
-                    right: MediaQuery.of(context).size.width * 0.80,
-                    // left: double.minPositive,
-                    left: MediaQuery.of(context).size.width * 0.025,
-                    top: 5,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        SizedBox(
-                          height: 50,
-                          width: 50,
-                          child: FloatingActionButton.extended(
-                              // label: Text('previous save'),
-                              shape: CircleBorder(),
-                              backgroundColor:
-                                  ThemeData.dark().focusColor.withOpacity(0.1),
-                              enableFeedback: true,
-                              onPressed: () {
-                                setState(() {
-                                  //reset position of listview
-                                  scrollToStart();
-                                  // stores the preivious answer
-                                  if (ans == '') {
-                                    return;
-                                  }
-                                  expression = expression + ans;
-                                  String temp = expression;
-                                  equation = temp;
-                                });
-                              },
-                              label: Icon(
-                                Icons.history,
-                                color: Colors.white.withOpacity(0.9),
-                                weight: 0.025,
-                              )),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    bottom: MediaQuery.of(context).size.height * 0.0,
-                    left: MediaQuery.of(context).size.width * 0.80,
-                    // left: double.minPositive,
-                    right: MediaQuery.of(context).size.width * 0.025,
-                    top: 5,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        SizedBox(
-                          height: 50,
-                          width: 50,
-                          child: FloatingActionButton.extended(
-                              // label: Text('previous save'),
-                              shape: CircleBorder(),
-                              backgroundColor:
-                                  ThemeData.dark().focusColor.withOpacity(0.1),
-                              enableFeedback: true,
-                              onPressed: () {
-                                setState(() {
-                                  isReverse = true;
-                                  //reset position of listview
-                                  scrollToStart();
-                                  // stores the preivious answer
-                                  if (ans == '') {
-                                    return;
-                                  }
-                                  expression = expression + ans;
-                                  String temp = expression;
-                                  equation = temp;
-                                });
-                              },
-                              label: Text(
-                                'Ans',
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.white.withOpacity(0.9),
-                                    fontWeight: FontWeight.w400),
-                              )),
-                        ),
-                      ],
-                    ),
-                  )
+                  if (showAnswerBtn) _answerButton(context)
                 ],
               ),
             ),
@@ -647,6 +524,126 @@ class _CalculatorPageState extends State<CalculatorPage> {
     );
   }
 
+  Positioned _answerButton(BuildContext context) {
+    return Positioned(
+      bottom: MediaQuery.of(context).size.height * 0.0,
+      left: MediaQuery.of(context).size.width * 0.80,
+      // left: double.minPositive,
+      right: MediaQuery.of(context).size.width * 0.025,
+      top: 5,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          SizedBox(
+            height: 50,
+            width: 50,
+            child: FloatingActionButton.extended(
+                // label: Text('previous save'),
+                shape: CircleBorder(),
+                backgroundColor: ThemeData.dark().focusColor.withOpacity(0.1),
+                enableFeedback: true,
+                onPressed: () {
+                  setState(() {
+                    isReverse = true;
+                    // change font size to show focus and hierachy
+                    equationSize = 52.2;
+                    resultSize = 20;
+                    // swapp color to show where the focus is at
+                    expressionColor = Colors.white;
+                    resultColor = Colors.white70;
+                    //reset position of listview
+                    scrollToStart();
+                    scrollToPage1();
+                    // stores the preivious answer
+                    if (ans == '') {
+                      return;
+                    }
+                    expression = expression + ans;
+                    String temp = expression;
+                    equation = temp;
+                  });
+                },
+                label: Text(
+                  'Ans',
+                  style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.white.withOpacity(0.9),
+                      fontWeight: FontWeight.w400),
+                )),
+          ),
+        ],
+      ),
+    );
+  }
+
+  ListView _ResultEquationDisplay(BuildContext context) {
+    return ListView(
+      primary: false,
+      controller: _scrollController,
+      scrollDirection: scrollDirection,
+      dragStartBehavior: DragStartBehavior.down,
+      physics:
+          BouncingScrollPhysics(decelerationRate: ScrollDecelerationRate.fast),
+      shrinkWrap: true,
+      reverse: isReverse,
+      // mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        isReverse
+            ? Container(
+                alignment: Alignment.centerRight,
+                padding: const EdgeInsets.fromLTRB(15, 20, 15, 5),
+                child: IntrinsicWidth(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                          flex: 1,
+                          child: Text(
+                            '=',
+                            style: TextStyle(color: Colors.white54),
+                          )),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Flexible(
+                        flex:
+                            (MediaQuery.of(context).size.width * 0.90).toInt(),
+                        child: Text(result,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: resultSize,
+                                color: resultColor)),
+                      ),
+                    ], //calculatorPage
+                  ),
+                ),
+              )
+            : Text(result,
+                textAlign: TextAlign.end,
+                style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: resultSize,
+                    color: resultColor)),
+
+        // SizedBox(height: 15,),
+        // LinearProgressIndicator(minHeight: 0.025,),
+
+        Container(
+          alignment: Alignment.centerRight,
+          padding: EdgeInsets.fromLTRB(
+              15, MediaQuery.of(context).size.height * 0.03, 15, 5),
+          child: Text(equation,
+              style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontSize: equationSize,
+                  color: expressionColor)),
+        ),
+        // _historyContainer(),
+      ],
+    );
+  }
+
   Container _historyContainer() {
     return Container(
       alignment: Alignment.centerLeft,
@@ -656,15 +653,17 @@ class _CalculatorPageState extends State<CalculatorPage> {
       child: isEmpty()
           ? Text('No entries yet...', style: TextStyle(color: Colors.white))
           : ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
+              physics: AlwaysScrollableScrollPhysics(),
               shrinkWrap: true,
               itemCount: history.length,
               itemBuilder: (context, index) {
                 String equation = history.keys.elementAt(index);
                 String result = history.values.elementAt(index);
                 return ListTile(
+                  contentPadding: EdgeInsets.all(10),
                   title: Text(
                     equation,
+                    // textAlign: TextAlign.end,
                     style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w400,
